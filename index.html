@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Math & GK Solver</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- html2pdf.js CDN for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden; /* Prevent body scroll, container manages 100vh */
+    }
+
+    .container {
+        width: 100%;
+        max-width: 450px;
+        height: 100vh; /* Full height on mobile */
+        display: flex;
+        flex-direction: column;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        overflow: hidden; /* Prevent container scroll, main/outputArea manage it */
+    }
+
+    header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 1.1em;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    header .menu-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 1.5em;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 10%;
+        transition: all 0.3s ease;
+    }
+
+    header .menu-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    header .app-title {
+        font-weight: 600;
+        font-size: 1.3em;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    main {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        position: relative;
+    }
+
+    textarea#questionInput {
+        flex-grow: 0;
+        width: calc(100% - 30px);
+        min-height: 120px;
+        border: 2px solid transparent;
+        border-radius: 15px;
+        padding: 20px;
+        font-size: 1.1em;
+        resize: none;
+        outline: none;
+        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    textarea#questionInput:focus {
+        border-color: #667eea;
+        background: rgba(255, 255, 255, 0.95);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .input-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .action-buttons button, .file-input-wrapper {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 50%;
+        width: 55px;
+        height: 55px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.4em;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .action-buttons button:hover, .file-input-wrapper:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .action-buttons button:disabled, .file-input-wrapper.disabled {
+        background: #a7a7a7;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+
+    .file-input-wrapper input[type=file] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    #imagePreview {
+        max-width: 100%;
+        max-height: 120px;
+        margin: 10px 0;
+        border-radius: 10px;
+        display: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        object-fit: contain;
+    }
+
+    #outputArea {
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 20px;
+        font-size: 1.1em;
+        word-wrap: break-word;
+        overflow-y: auto;
+        margin-top: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+        min-height: 150px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #outputTextContent {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-bottom: 50px;
+    }
+    
+    #outputPlaceholder {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: 500;
+        opacity: 0.9;
+    }
+
+    /* Main Speaker Button Styles */
+    #speakerBtn {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+        border: none;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2em;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        z-index: 5;
+    }
+
+    #speakerBtn:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+    }
+
+    #speakerBtn.playing {
+        background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    }
+
+    /* History List Speaker Button Styles */
+    .history-speaker-btn {
+        background: rgba(102, 126, 234, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: none; /* Controlled by JS based on TTS support */
+        justify-content: center;
+        align-items: center;
+        font-size: 0.8em;
+        color: #667eea;
+        cursor: pointer;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        transition: all 0.2s ease;
+        margin-left: 10px;
+        vertical-align: middle;
+        flex-shrink: 0;
+    }
+
+    .history-speaker-btn:hover {
+        background: rgba(102, 126, 234, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .history-speaker-btn.playing {
+        background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        color: white;
+    }
+
+    /* PDF Download Button Style */
+    #downloadHistoryPdfBtn {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); /* Orange for PDF */
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-size: 1em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px auto 0; /* Center it below history list */
+        box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+        transition: all 0.3s ease;
+        width: calc(100% - 40px); /* Adjust width */
+        max-width: 250px;
+    }
+
+    #downloadHistoryPdfBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(243, 156, 18, 0.6);
+    }
+    #downloadHistoryPdfBtn:disabled {
+        background: #a7a7a7;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+
+
+    .send-btn {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.6em;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .send-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
+    }
+
+    .send-btn:disabled {
+        background: #a7a7a7;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+
+    /* Camera Modal Styles */
+    .camera-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .camera-modal.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .camera-container {
+        position: relative;
+        max-width: 90%;
+        max-height: 70%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    #cameraVideo {
+        width: 100%;
+        height: auto;
+        border-radius: 18px;
+        display: block;
+    }
+
+    .camera-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .camera-btn {
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5em;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .camera-btn:hover {
+        transform: scale(1.1);
+        background: white;
+    }
+
+    .capture-btn {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        color: white;
+        width: 70px;
+        height: 70px;
+        font-size: 1.8em;
+    }
+
+    .capture-btn:hover {
+        background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+    }
+
+    .close-camera-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2em;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .close-camera-btn:hover {
+        background: white;
+        transform: scale(1.1);
+    }
+
+    /* History Modal Styles */
+    .history-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .history-modal.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* Main Menu Modal Styles (similar to history-modal) */
+    .main-menu-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .main-menu-modal.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .modal-content {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 400px;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-content h2 {
+        margin-top: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 1.5em;
+    }
+
+    .modal-content .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 107, 107, 0.1);
+        border: none;
+        font-size: 1.5em;
+        color: #ff6b6b;
+        cursor: pointer;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .modal-content .close-btn:hover {
+        background: rgba(255, 107, 107, 0.2);
+        transform: scale(1.1);
+    }
+
+    #historyList, #mainMenuOptions {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #historyList li {
+        background: rgba(102, 126, 234, 0.1);
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 15px;
+        font-size: 0.95em;
+        line-height: 1.5;
+        border-left: 4px solid #667eea;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    #historyList li:hover {
+        background: rgba(102, 126, 234, 0.15);
+        transform: translateX(5px);
+    }
+
+    #historyList li strong {
+        color: #667eea;
+    }
+
+    #historyList li .answer-content {
+        display: flex;
+        align-items: center;
+        margin-top: 8px;
+        color: #555;
+        word-break: break-word;
+    }
+
+    #historyList li .answer-text-wrapper {
+        flex-grow: 1;
+    }
+
+    #historyList li small {
+        display: block;
+        margin-top: 8px;
+        color: #999;
+        font-size: 0.8em;
+    }
+
+    /* Main Menu Specific Styles */
+    #mainMenuOptions li {
+        margin-bottom: 10px;
+    }
+
+    #mainMenuOptions button {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        font-size: 1.1em;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #mainMenuOptions button:hover {
+        background: rgba(102, 126, 234, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+    }
+
+    #mainMenuOptions button i {
+        font-size: 1.3em;
+        color: #764ba2;
+    }
+
+    .menu-divider {
+        height: 1px;
+        background-color: rgba(0,0,0,0.1);
+        margin: 20px 0;
+    }
+
+    /* Loading animation */
+    .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+        .container {
+            border-radius: 0;
+            height: 100vh;
+        }
+        
+        main {
+            padding: 15px;
+        }
+        
+        .send-btn {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        #speakerBtn {
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            font-size: 1.1em;
+        }
+
+        .history-speaker-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 0.7em;
+            margin-left: 8px;
+        }
+
+        #downloadHistoryPdfBtn {
+            padding: 10px 15px;
+            font-size: 0.9em;
+            gap: 8px;
+        }
+
+        .camera-container {
+            max-width: 95%;
+            max-height: 60%;
+        }
+
+        .camera-controls {
+            bottom: 10px;
+            gap: 15px;
+        }
+
+        .camera-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 1.3em;
+        }
+
+        .capture-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 1.6em;
+        }
+
+        .modal-content {
+            max-width: 95%;
+            padding: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="app-title">YADAV Sir AI Math & GK Solver</div>
+        </header>
+<main>
+        <textarea id="questionInput" placeholder="Ask a math problem, a GK question, or anything!"></textarea>
+        
+        <div class="input-options">
+            <div class="action-buttons">
+                <button id="micBtn" title="Speak your question">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button id="cameraBtn" title="Open camera to capture image">
+                    <i class="fas fa-camera"></i>
+                </button>
+                <button id="clearInputBtn" title="Clear input and output">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <!-- New Share Result Button -->
+                <button id="shareResultBtn" title="Share the current question and answer">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+            <div class="file-input-wrapper">
+                <input type="file" id="imageInput" accept="image/*" title="Upload an image to ask about">
+                <i class="fas fa-image"></i>
+            </div>
+        </div>
+        
+        <img id="imagePreview" alt="Image Preview">
+
+        <div id="outputArea">
+            <div id="outputTextContent">
+                <div id="outputPlaceholder">Your answers will appear here. ✨</div>
+            </div>
+            <button id="speakerBtn" title="Listen to the answer">
+                <i class="fas fa-volume-up"></i>
+            </button>
+        </div>
+        
+        <button class="send-btn" id="sendBtn" title="Get Answer">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </main>
+
+    <!-- Camera Modal -->
+    <div class="camera-modal" id="cameraModal">
+        <div class="camera-container">
+            <button class="close-camera-btn" id="closeCameraBtn">
+                <i class="fas fa-times"></i>
+            </button>
+            <video id="cameraVideo" autoplay playsinline></video>
+            <div class="camera-controls">
+                <button class="camera-btn" id="switchCameraBtn" title="Switch camera">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="camera-btn capture-btn" id="captureBtn" title="Capture photo">
+                    <i class="fas fa-camera"></i>
+                </button>
+                <button class="camera-btn" id="flashBtn" title="Toggle flash">
+                    <i class="fas fa-bolt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Menu Modal -->
+    <div class="main-menu-modal" id="mainMenuModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeMainMenuBtn">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2>🚀 Menu</h2>
+            <ul id="mainMenuOptions">
+                <li><button id="openHistoryBtn"><i class="fas fa-history"></i> Answer History</button></li>
+                <li><button id="downloadAppBtn"><i class="fas fa-download"></i> Download App (PWA)</button></li>
+                <li><button id="shareAppBtn"><i class="fas fa-share-alt"></i> Share App</button></li>
+                <li class="menu-divider"></li>
+                <li><button id="newGkQuestionBtn"><i class="fas fa-brain"></i> New GK Question</button></li>
+                <li><button id="newMathProblemBtn"><i class="fas fa-calculator"></i> New Math Problem</button></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="history-modal" id="historyModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeHistoryBtn">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2>📚 Answer History</h2>
+            <!-- New PDF Download Button -->
+            <button id="downloadHistoryPdfBtn" title="Download history as PDF">
+                <i class="fas fa-file-pdf"></i> PDF डाउनलोड करें
+            </button>
+            <ul id="historyList">
+                <!-- History items will be inserted here by JavaScript -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get DOM elements
+        const questionInput = document.getElementById('questionInput');
+        const outputArea = document.getElementById('outputArea');
+        const outputTextContent = document.getElementById('outputTextContent');
+        const outputPlaceholder = document.getElementById('outputPlaceholder');
+        const micBtn = document.getElementById('micBtn');
+        const cameraBtn = document.getElementById('cameraBtn');
+        const clearInputBtn = document.getElementById('clearInputBtn');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const sendBtn = document.getElementById('sendBtn');
+        const menuBtn = document.getElementById('menuBtn');
+        
+        // History elements
+        const historyModal = document.getElementById('historyModal');
+        const historyList = document.getElementById('historyList');
+        const closeHistoryBtn = document.getElementById('closeHistoryBtn');
+        const downloadHistoryPdfBtn = document.getElementById('downloadHistoryPdfBtn'); // New PDF button
+
+        // Main Menu elements
+        const mainMenuModal = document.getElementById('mainMenuModal');
+        const closeMainMenuBtn = document.getElementById('closeMainMenuBtn');
+        const openHistoryBtn = document.getElementById('openHistoryBtn');
+        const downloadAppBtn = document.getElementById('downloadAppBtn');
+        const shareAppBtn = document.getElementById('shareAppBtn');
+        const newGkQuestionBtn = document.getElementById('newGkQuestionBtn');
+        const newMathProblemBtn = document.getElementById('newMathProblemBtn');
+
+        // Camera elements
+        const cameraModal = document.getElementById('cameraModal');
+        const cameraVideo = document.getElementById('cameraVideo');
+        const captureBtn = document.getElementById('captureBtn');
+        const closeCameraBtn = document.getElementById('closeCameraBtn');
+        const switchCameraBtn = document.getElementById('switchCameraBtn');
+        const flashBtn = document.getElementById('flashBtn');
+
+        // Share Result Button
+        const shareResultBtn = document.getElementById('shareResultBtn');
+
+        // Speaker Button and Speech Synthesis (for main output)
+        const speakerBtn = document.getElementById('speakerBtn');
+        let currentUtterance = null;
+        let isSpeaking = false;
+        let hindiVoice = null;
+
+        // API Configuration
+        const GEMINI_API_KEY = 'AIzaSyDHy9J04dI8LdK1ijNJMrRXubJ5ucx9rdk';
+
+        // Variables for image data, history, and camera
+        let uploadedImageData = null;
+        let history = [];
+        let currentStream = null;
+        let currentFacingMode = 'environment';
+        let flashEnabled = false;
+
+        // Speech Recognition setup
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+        } else {
+            micBtn.disabled = true;
+            micBtn.title = "Speech recognition not supported in this browser";
+        }
+
+        // --- Helper Functions ---
+
+        // Enable/Disable all interaction elements
+        const setInteractionState = (disabled) => {
+            sendBtn.disabled = disabled;
+            questionInput.disabled = disabled;
+            micBtn.disabled = disabled || !SpeechRecognition;
+            cameraBtn.disabled = disabled;
+            clearInputBtn.disabled = disabled;
+            imageInput.disabled = disabled;
+            shareResultBtn.disabled = disabled;
+            document.querySelector('.file-input-wrapper').classList.toggle('disabled', disabled);
+        };
+
+        // Camera functionality
+        const startCamera = async () => {
+            try {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                }
+
+                const constraints = {
+                    video: {
+                        facingMode: currentFacingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                };
+
+                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+                cameraVideo.srcObject = currentStream;
+                cameraModal.classList.add('show');
+                
+                const videoTrack = currentStream.getVideoTracks()[0];
+                const capabilities = videoTrack.getCapabilities();
+                if (capabilities.torch) {
+                    flashBtn.style.display = 'flex';
+                    flashBtn.style.background = flashEnabled ? 
+                        'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)' : 
+                        'rgba(255, 255, 255, 0.9)';
+                } else {
+                    flashBtn.style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                outputTextContent.innerHTML = `📷 Camera access error: ${error.message}. Please allow camera permissions and try again.`;
+            }
+        };
+
+        const stopCamera = () => {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            cameraModal.classList.remove('show');
+        };
+
+        const switchCamera = async () => {
+            currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+            await startCamera();
+        };
+
+        const toggleFlash = async () => {
+            if (currentStream) {
+                const videoTrack = currentStream.getVideoTracks()[0];
+                const capabilities = videoTrack.getCapabilities();
+                
+                if (capabilities.torch) {
+                    flashEnabled = !flashEnabled;
+                    try {
+                        await videoTrack.applyConstraints({
+                            advanced: [{ torch: flashEnabled }]
+                        });
+                        flashBtn.style.background = flashEnabled ? 
+                            'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)' : 
+                            'rgba(255, 255, 255, 0.9)';
+                    } catch (error) {
+                        console.error('Flash control error:', error);
+                        outputTextContent.innerHTML = 'Failed to toggle flash. Device might not support it or an error occurred.';
+                    }
+                } else {
+                    outputTextContent.innerHTML = 'Flash (torch) is not supported on this camera.';
+                }
+            }
+        };
+
+        const capturePhoto = () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.width = cameraVideo.videoWidth;
+            canvas.height = cameraVideo.videoHeight;
+            
+            context.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+            
+            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+            
+            imagePreview.src = dataURL;
+            imagePreview.style.display = 'block';
+            
+            uploadedImageData = {
+                mimeType: 'image/jpeg',
+                data: dataURL.split(',')[1]
+            };
+            
+            questionInput.placeholder = "📷🖼️ Photo captured! Add a question about it (optional)";
+            outputTextContent.innerHTML = `📷 Photo captured successfully! You can now ask questions about it.`;
+            
+            stopCamera();
+        };
+
+        // --- Speech Synthesis Functions ---
+        const loadVoices = () => {
+            const voices = window.speechSynthesis.getVoices();
+            hindiVoice = voices.find(voice => voice.lang === 'hi-IN');
+            if (!hindiVoice) {
+                console.warn("Hindi voice (hi-IN) not found. Falling back to a suitable English voice.");
+                hindiVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
+            }
+            if (!hindiVoice) {
+                console.error("No voices found at all. Text-to-speech may not work.");
+                speakerBtn.style.display = 'none';
+                // Update visibility of existing history speaker buttons
+                document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
+            } else {
+                // If voices are loaded, ensure history speaker buttons are visible
+                document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'inline-flex');
+            }
+        };
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+        } else {
+            console.warn("Speech Synthesis API not supported in this browser.");
+            speakerBtn.style.display = 'none';
+            document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
+        }
+
+        const speakAnswer = (text, targetButton) => {
+            if (!'speechSynthesis' in window || !hindiVoice) {
+                console.error('Speech synthesis not ready (API not supported or no voices loaded).');
+                alert('क्षमा करें, आपका ब्राउज़र पाठ से वाक् का समर्थन नहीं करता है या आवाज़ें लोड नहीं हुई हैं।');
+                return;
+            }
+
+            stopSpeaking(); // Stop any ongoing speech and reset ALL speaker buttons
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.voice = hindiVoice;
+            currentUtterance.lang = hindiVoice.lang;
+            currentUtterance.rate = 1;
+            currentUtterance.pitch = 1;
+
+            currentUtterance.onstart = () => {
+                isSpeaking = true;
+                if (targetButton) {
+                    targetButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                    targetButton.classList.add('playing');
+                    targetButton.title = 'बोलना बंद करें';
+                }
+                console.log('Speaking started for:', text.substring(0, Math.min(50, text.length)) + '...');
+            };
+            currentUtterance.onend = () => {
+                isSpeaking = false;
+                if (targetButton) {
+                    targetButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    targetButton.classList.remove('playing');
+                    targetButton.title = 'उत्तर सुनें';
+                }
+                console.log('Speaking ended.');
+            };
+            currentUtterance.onerror = (event) => {
+                console.error('Speech synthesis error:', event);
+                isSpeaking = false;
+                if (targetButton) {
+                    targetButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    targetButton.classList.remove('playing');
+                    targetButton.title = 'उत्तर सुनें';
+                }
+                alert('पाठ से वाक् विफल रहा: ' + event.error + '. कृपया पुनः प्रयास करें।');
+            };
+
+            window.speechSynthesis.speak(currentUtterance);
+        };
+
+        const stopSpeaking = () => {
+            if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            isSpeaking = false;
+            document.querySelectorAll('.history-speaker-btn, #speakerBtn').forEach(btn => {
+                btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                btn.classList.remove('playing');
+                btn.title = 'उत्तर सुनें';
+            });
+            console.log('Speaking stopped.');
+        };
+
+
+        // --- Enhanced AI Query Function ---
+        const performAIQuery = async (text, imageData) => {
+
+            let modelName = 'gemini-2.0-flash-exp';
+            const parts = [];
+
+            if (text.trim()) {
+                let prompt = text.trim();
+                if (imageData) {
+                    prompt = `Analyze this image and answer: ${prompt}. Provide a clear, detailed response.`;
+                } else {
+                    const lowerCasePrompt = prompt.toLowerCase();
+                    if (lowerCasePrompt.match(/(\d+\s*[\+\-\*\/xX÷]\s*\d+)|(solve)|(calculate)|(what is the result of)|(evaluate)|(integral)|(derivative)|(equation)|(find x)|(simplify)/i)) {
+                        prompt = `Solve this math problem step by step with clear explanations: ${prompt}`;
+                    } else if (lowerCasePrompt.match(/(who is)|(what is)|(tell me about)|(define)|(fact)|(describe)|(explain)|(history of)|(when did)|(where is)|(what are)|(list)|(quiz)|(gk)|(general knowledge)|(बताओ)|(क्या है)|(कौन है)|(कब)|(कहां)/i)) {
+                        prompt = `Answer this general knowledge question with accurate, informative details: ${prompt}`;
+                    } else {
+                        prompt = `Provide a helpful and comprehensive answer to: ${prompt}`;
+                    }
+                }
+                parts.push({ text: prompt });
+            }
+
+            if (imageData) {
+                parts.push({
+                    inlineData: {
+                        mimeType: imageData.mimeType,
+                        data: imageData.data
+                    }
+                });
+            }
+
+            if (parts.length === 0) {
+                return 'Please enter a question or upload an image.';
+            }
+
+            const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{ parts: parts }],
+                        generationConfig: {
+                            temperature: 0.3,
+                            maxOutputTokens: 1000,
+                            topP: 0.8,
+                            topK: 40
+                        },
+                        safetySettings: [
+                            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
+                        ]
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Gemini API Error Response:', errorData);
+                    
+                    switch (response.status) {
+                        case 400:
+                            return `API Error: Invalid request or input. ${errorData.error?.message || ''} Please check your input.`;
+                        case 403:
+                            return `API Error: Access denied. Please verify your API key and billing setup.`;
+                        case 429:
+                            return `API Error: Rate limit exceeded. Please wait a moment and try again.`;
+                        case 500:
+                            return `API Error: Server error. Please try again later.`;
+                        default:
+                            return `API Error (${response.status}): ${errorData.error?.message || 'Unknown error occurred'}`;
+                    }
+                }
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates.length > 0 && 
+                    data.candidates[0].content && data.candidates[0].content.parts && 
+                    data.candidates[0].content.parts.length > 0 && data.candidates[0].content.parts[0].text) {
+                    return data.candidates[0].content.parts[0].text.trim();
+                } else {
+                    console.warn('Unexpected API response structure or blocked content:', data);
+                    if (data.promptFeedback && data.promptFeedback.blockReason) {
+                        return `Content blocked by safety filters: ${data.promptFeedback.blockReason}. Please try rephrasing your question.`;
+                    }
+                    return "No response generated. This might be due to safety settings or an empty response. Please try rephrasing your question.";
+                }
+
+            } catch (error) {
+                console.error('AI query error:', error);
+                if (error.message.includes('Failed to fetch')) {
+                    return `Network error: Please check your internet connection and ensure the page is served over HTTPS.`;
+                }
+                return `Error: ${error.message}`;
+            }
+        };
+
+        // Function to add query/answer to history
+        const addToHistory = (question, answer, imageUsed = false) => {
+            const timestamp = new Date().toLocaleString();
+            history.unshift({ question, answer, imageUsed, timestamp });
+            if (history.length > 50) {
+                history.pop();
+            }
+            // history list is only updated when modal is opened via displayHistory()
+        };
+
+        // Function to display history in the modal
+        const displayHistory = () => {
+            historyList.innerHTML = ''; // Clear existing list items
+            if (history.length === 0) {
+                const li = document.createElement('li');
+                li.innerHTML = '<em>No query history yet. Start asking questions! 🤔</em>';
+                historyList.appendChild(li);
+                downloadHistoryPdfBtn.disabled = true; // Disable PDF button if no history
+            } else {
+                downloadHistoryPdfBtn.disabled = false; // Enable PDF button if history exists
+            }
+
+            history.forEach((entry) => {
+                const li = document.createElement('li');
+                let questionDisplay = entry.question || '';
+                if (entry.imageUsed) {
+                    questionDisplay = `🖼️ ${questionDisplay.length > 0 ? questionDisplay : 'Image Query'}`;
+                }
+                if (questionDisplay.length > 100) {
+                    questionDisplay = questionDisplay.substring(0, 100) + '...';
+                }
+
+                const questionDiv = document.createElement('div');
+                questionDiv.innerHTML = `<strong>Q:</strong> ${questionDisplay}`;
+                li.appendChild(questionDiv);
+
+                const answerContentDiv = document.createElement('div');
+                answerContentDiv.classList.add('answer-content');
+
+                const answerTextWrapper = document.createElement('span');
+                answerTextWrapper.classList.add('answer-text-wrapper');
+                answerTextWrapper.textContent = `A: ${entry.answer}`; // Use textContent for clean text, innerHTML for snippet not needed here
+                answerContentDiv.appendChild(answerTextWrapper);
+
+                const historySpeakerBtn = document.createElement('button');
+                historySpeakerBtn.classList.add('history-speaker-btn');
+                historySpeakerBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                historySpeakerBtn.title = 'उत्तर सुनें';
+                
+                if ('speechSynthesis' in window && hindiVoice) {
+                    historySpeakerBtn.style.display = 'inline-flex'; 
+                } else {
+                    historySpeakerBtn.style.display = 'none';
+                }
+
+                historySpeakerBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    if (historySpeakerBtn.classList.contains('playing')) {
+                        stopSpeaking();
+                    } else {
+                        speakAnswer(entry.answer, historySpeakerBtn);
+                    }
+                });
+                answerContentDiv.appendChild(historySpeakerBtn);
+
+                li.appendChild(answerContentDiv);
+
+                const timestampSmall = document.createElement('small');
+                timestampSmall.innerHTML = entry.timestamp;
+                li.appendChild(timestampSmall);
+
+                historyList.appendChild(li);
+            });
+        };
+
+        // Enhanced loading animation
+        const showLoading = () => {
+            outputTextContent.innerHTML = '<div class="loading"></div> <span style="margin-left: 10px;">AI is thinking...</span>';
+        };
+
+        // Function to prepare input for a new query type
+        const prepareNewQuery = (type) => {
+            questionInput.value = '';
+            uploadedImageData = null;
+            imagePreview.style.display = 'none';
+            outputTextContent.innerHTML = '<div id="outputPlaceholder">Your answers will appear here. ✨</div>';
+            mainMenuModal.classList.remove('show');
+            stopSpeaking();
+            speakerBtn.style.display = 'none';
+
+            if (type === 'gk') {
+                questionInput.placeholder = '💡 Ask a General Knowledge question (e.g., "Who discovered gravity?")';
+                outputTextContent.innerHTML = `<div id="outputPlaceholder">Ready for a GK question! Type it in the box.</div>`;
+            } else if (type === 'math') {
+                questionInput.placeholder = '🔢 Ask a Math problem (e.g., "Solve 2x + 5 = 11")';
+                outputTextContent.innerHTML = `<div id="outputPlaceholder">Ready for a Math problem! Type it in the box.</div>`;
+            } else {
+                questionInput.placeholder = 'Ask a math problem, a GK question, or anything!';
+                outputTextContent.innerHTML = '<div id="outputPlaceholder">Your answers will appear here. ✨</div>';
+            }
+            questionInput.focus();
+        };
+
+        // --- Event Listeners ---
+
+        // Camera button
+        cameraBtn.addEventListener('click', startCamera);
+
+        // Camera controls
+        captureBtn.addEventListener('click', capturePhoto);
+        closeCameraBtn.addEventListener('click', stopCamera);
+        switchCameraBtn.addEventListener('click', switchCamera);
+        flashBtn.addEventListener('click', toggleFlash);
+
+        // Close camera modal when clicking outside
+        cameraModal.addEventListener('click', (e) => {
+            if (e.target === cameraModal) {
+                stopCamera();
+            }
+        });
+
+        // Microphone button
+        micBtn.addEventListener('click', () => {
+            if (!recognition) return;
+
+            micBtn.disabled = true;
+            micBtn.style.background = '#ffd700';
+            micBtn.querySelector('i').classList.add('fa-beat');
+            stopSpeaking();
+            speakerBtn.style.display = 'none';
+
+            recognition.start();
+            outputTextContent.innerHTML = '🔊 Listening... Please speak your question.';
+            questionInput.placeholder = 'Listening...';
+        });
+
+        if (recognition) {
+            recognition.onresult = (event) => {
+                const speechResult = event.results[0][0].transcript;
+                questionInput.value = speechResult;
+                outputTextContent.innerHTML = '<div id="outputPlaceholder">🔊 Speech recognized. Click Send to get answer.</div>';
+            };
+
+            recognition.onend = () => {
+                micBtn.disabled = false;
+                micBtn.style.background = '';
+                micBtn.querySelector('i').classList.remove('fa-beat');
+                questionInput.placeholder = 'Ask a math problem, a GK question, or anything!';
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                outputTextContent.innerHTML = `🔊 Speech recognition error: ${event.error}. Please try again.`;
+                micBtn.disabled = false;
+                micBtn.style.background = '';
+                micBtn.querySelector('i').classList.remove('fa-beat');
+            };
+        }
+
+        // Image Input (File Upload)
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    imagePreview.src = reader.result;
+                    imagePreview.style.display = 'block';
+                    uploadedImageData = {
+                        mimeType: file.type,
+                        data: reader.result.split(',')[1]
+                    };
+                    questionInput.placeholder = `🖼️ Image uploaded! Add a question about it (optional)`;
+                    outputTextContent.innerHTML = `<div id="outputPlaceholder">🖼️ Image loaded successfully! You can now ask questions about it.</div>`;
+                    stopSpeaking();
+                    speakerBtn.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.src = '';
+                imagePreview.style.display = 'none';
+                uploadedImageData = null;
+                questionInput.placeholder = `Ask a math problem, a GK question, or anything!`;
+                outputTextContent.innerHTML = '<div id="outputPlaceholder">Your answers will appear here. ✨</div>';
+                stopSpeaking();
+                speakerBtn.style.display = 'none';
+            }
+        });
+
+        // Clear Input Button
+        clearInputBtn.addEventListener('click', () => {
+            prepareNewQuery('general');
+            imageInput.value = '';
+            stopSpeaking();
+            speakerBtn.style.display = 'none';
+        });
+
+        // Send/Get Answer Button
+        sendBtn.addEventListener('click', async () => {
+            const textQuestion = questionInput.value.trim();
+
+            if (!textQuestion && !uploadedImageData) {
+                outputTextContent.innerHTML = '<div id="outputPlaceholder">💡 Please type a question or upload an image to get started!</div>';
+                return;
+            }
+
+            showLoading();
+            setInteractionState(true);
+            stopSpeaking();
+            speakerBtn.style.display = 'none';
+
+            try {
+                const answer = await performAIQuery(textQuestion, uploadedImageData);
+                outputTextContent.innerHTML = answer.replace(/\n/g, '<br>');
+
+                const isNotError = !answer.startsWith("API Error:") && !answer.startsWith("Network error:") && !answer.startsWith("Error:") && !answer.startsWith("Content blocked by safety filters:");
+
+                if (isNotError) {
+                    addToHistory(textQuestion, answer, !!uploadedImageData);
+
+                    const lowerCasePrompt = textQuestion.toLowerCase();
+                    const isGKQuestion = lowerCasePrompt.match(/(who is)|(what is)|(tell me about)|(define)|(fact)|(describe)|(explain)|(history of)|(when did)|(where is)|(what are)|(list)|(quiz)|(gk)|(general knowledge)|(बताओ)|(क्या है)|(कौन है)|(कब)|(कहां)/i);
+
+                    if (isGKQuestion && 'speechSynthesis' in window && hindiVoice) {
+                        speakerBtn.style.display = 'flex';
+                        speakerBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                        speakerBtn.classList.remove('playing');
+                        console.log("Main speaker button shown for GK/Quiz answer.");
+                    } else {
+                        speakerBtn.style.display = 'none';
+                    }
+                } else {
+                    speakerBtn.style.display = 'none';
+                }
+
+            } finally {
+                setInteractionState(false);
+            }
+        });
+
+        // --- Main Speaker Button Click Handler ---
+        speakerBtn.addEventListener('click', () => {
+            const answerText = outputTextContent.innerText.trim(); 
+            if (isSpeaking) {
+                stopSpeaking();
+            } else {
+                if (answerText && answerText !== outputPlaceholder.innerText.trim()) { 
+                    speakAnswer(answerText, speakerBtn);
+                } else {
+                    console.warn('No answer content to speak from main output.');
+                    alert('कोई उत्तर नहीं है जिसे सुना जा सके।');
+                }
+            }
+        });
+
+
+        // --- Share Result Button Logic ---
+        shareResultBtn.addEventListener('click', async () => {
+            const currentQuestion = questionInput.value.trim();
+            const currentAnswer = outputTextContent.querySelector('#outputPlaceholder') ? '' : outputTextContent.innerText.trim();
+
+            if (!currentQuestion && !uploadedImageData && currentAnswer === '') {
+                alert('कृपया पहले एक प्रश्न पूछें और उत्तर प्राप्त करें, फिर साझा करें।');
+                return;
+            }
+
+            const shareText = `YADAV Sir AI Math & GK Solver\n\n` +
+                               `प्रश्न: ${currentQuestion || (uploadedImageData ? 'छवि-आधारित प्रश्न' : 'कोई प्रश्न नहीं')}\n\n` +
+                               `उत्तर: ${currentAnswer || 'कोई उत्तर उपलब्ध नहीं'}\n\n` +
+                               `इस AI ऐप से अपनी समस्याओं का समाधान पाएं: ${window.location.href}`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'AI Math & GK Solver Result',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                    console.log('Content shared successfully!');
+                } catch (error) {
+                    console.error('Error sharing:', error);
+                    if (error.name !== 'AbortError') {
+                        alert(`साझा करने में असमर्थ: ${error.message}`);
+                    }
+                }
+            } else {
+                alert('आपका ब्राउज़र सीधे साझा करने का समर्थन नहीं करता है। यहाँ पाठ है:\n\n' + shareText);
+            }
+        });
+
+
+        // --- Main Menu Logic ---
+        menuBtn.addEventListener('click', () => {
+            mainMenuModal.classList.add('show');
+            stopSpeaking();
+        });
+
+        closeMainMenuBtn.addEventListener('click', () => {
+            mainMenuModal.classList.remove('show');
+        });
+
+        mainMenuModal.addEventListener('click', (e) => {
+            if (e.target === mainMenuModal) {
+                mainMenuModal.classList.remove('show');
+            }
+        });
+
+        // Link History from Main Menu button
+        openHistoryBtn.addEventListener('click', () => {
+            mainMenuModal.classList.remove('show');
+            stopSpeaking();
+            displayHistory(); // Important: call displayHistory to refresh the list with speaker buttons
+            historyModal.classList.add('show');
+        });
+
+        // Download App (PWA) button
+        downloadAppBtn.addEventListener('click', () => {
+            alert("यह एक वेब एप्लिकेशन है! इसे 'डाउनलोड' करने के लिए, अपने ब्राउज़र के 'होम स्क्रीन पर जोड़ें' या 'ऐप इंस्टॉल करें' सुविधा का उपयोग करें।");
+            mainMenuModal.classList.remove('show');
+        });
+
+        // New Share App Button Logic
+        shareAppBtn.addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: ' YADAV Sir AI Math & GK Solver',
+                        text: 'गणित और सामान्य ज्ञान के सवालों के झटपट जवाब पाएं इस AI ऐप से!',
+                        url: window.location.href
+                    });
+                    console.log('App shared successfully!');
+                } catch (error) {
+                    console.error('Error sharing app:', error);
+                    if (error.name !== 'AbortError') {
+                        alert(`ऐप साझा करने में असमर्थ: ${error.message}`);
+                    }
+                }
+            } else {
+                alert('आपका ब्राउज़र सीधे साझा करने का समर्थन नहीं करता है। ऐप का URL यहाँ है:\n\n' + window.location.href + '\n\nइसे मैन्युअल रूप से कॉपी करें और साझा करें।');
+            }
+            mainMenuModal.classList.remove('show');
+        });
+
+        // New GK Question button
+        newGkQuestionBtn.addEventListener('click', () => prepareNewQuery('gk'));
+
+        // New Math Problem button
+        newMathProblemBtn.addEventListener('click', () => prepareNewQuery('math'));
+
+        // --- History Modal Logic ---
+        closeHistoryBtn.addEventListener('click', () => {
+            historyModal.classList.remove('show');
+            stopSpeaking();
+        });
+
+        // Close history modal when clicking outside
+        historyModal.addEventListener('click', (e) => {
+            if (e.target === historyModal) {
+                historyModal.classList.remove('show');
+                stopSpeaking();
+            }
+        });
+
+        // --- PDF Download Logic ---
+        downloadHistoryPdfBtn.addEventListener('click', () => {
+            if (history.length === 0) {
+                alert('डाउनलोड करने के लिए कोई इतिहास उपलब्ध नहीं है।');
+                return;
+            }
+
+            stopSpeaking(); // Stop any ongoing speech before PDF generation
+
+            const element = historyList; // The element to convert to PDF
+            const opt = {
+                margin: 0.5,
+                filename: 'YADAV_Sir_AI_Solver_History.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Show a temporary loading message in the modal
+            const originalContent = historyModal.querySelector('.modal-content').innerHTML;
+            historyModal.querySelector('.modal-content').innerHTML = `
+                <div style="text-align: center; padding: 50px;">
+                    <div class="loading" style="width: 40px; height: 40px; border-width: 5px; margin: 0 auto 20px;"></div>
+                    <p style="color: #667eea; font-size: 1.2em;">PDF तैयार हो रही है... कृपया प्रतीक्षा करें।</p>
+                </div>
+            `;
+            downloadHistoryPdfBtn.disabled = true; // Disable button during process
+
+
+            html2pdf().from(element).set(opt).save().then(() => {
+                // Restore original content after PDF generation
+                historyModal.querySelector('.modal-content').innerHTML = originalContent;
+                displayHistory(); // Re-render history list to re-attach event listeners
+                console.log('PDF downloaded successfully!');
+                downloadHistoryPdfBtn.disabled = false;
+            }).catch(error => {
+                console.error('PDF generation failed:', error);
+                alert('PDF जनरेशन में त्रुटि हुई। कृपया पुनः प्रयास करें।');
+                // Restore original content on error too
+                historyModal.querySelector('.modal-content').innerHTML = originalContent;
+                displayHistory(); // Re-render history list
+                downloadHistoryPdfBtn.disabled = false;
+            });
+        });
+
+
+        // Initial setup: display empty history
+        displayHistory();
+    });
+</script>
+</body>
+</html>
