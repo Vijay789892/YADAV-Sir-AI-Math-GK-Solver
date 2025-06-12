@@ -291,6 +291,32 @@
         transform: none;
     }
 
+    /* Individual PDF download button in history list */
+    .single-pdf-btn {
+        background: rgba(243, 156, 18, 0.2); /* Lighter orange */
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.8em;
+        color: #f39c12;
+        cursor: pointer;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        transition: all 0.2s ease;
+        margin-left: 10px;
+        vertical-align: middle;
+        flex-shrink: 0;
+    }
+
+    .single-pdf-btn:hover {
+        background: rgba(243, 156, 18, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
 
     .send-btn {
         position: absolute;
@@ -637,7 +663,7 @@
         }
         
         .send-btn {
-            bottom: 20px;
+            bottom: 290px;
             right: 20px;
         }
 
@@ -649,7 +675,7 @@
             font-size: 1.1em;
         }
 
-        .history-speaker-btn {
+        .history-speaker-btn, .single-pdf-btn { /* Apply to both new buttons */
             width: 28px;
             height: 28px;
             font-size: 0.7em;
@@ -700,26 +726,27 @@
             <div class="app-title">YADAV Sir AI Math & GK Solver</div>
         </header>
 <main>
-        <textarea id="questionInput" placeholder="Ask a math problem, a GK question, or anything!"></textarea>
+        <textarea id="questionInput" placeholder="गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!"></textarea>
         
         <div class="input-options">
             <div class="action-buttons">
-                <button id="micBtn" title="Speak your question">
+                <button id="micBtn" title="अपना प्रश्न बोलें">
                     <i class="fas fa-microphone"></i>
                 </button>
-                <button id="cameraBtn" title="Open camera to capture image">
+                <button id="cameraBtn" title="छवि कैप्चर करने के लिए कैमरा खोलें">
                     <i class="fas fa-camera"></i>
                 </button>
-                <button id="clearInputBtn" title="Clear input and output">
+                <button id="clearInputBtn" title="इनपुट और आउटपुट साफ़ करें">
                     <i class="fas fa-trash-alt"></i>
                 </button>
                 <!-- New Share Result Button -->
-                <button id="shareResultBtn" title="Share the current question and answer">
+                <button id="shareResultBtn" title="वर्तमान प्रश्न और उत्तर साझा करें">
                     <i class="fas fa-share-alt"></i>
                 </button>
             </div>
+
             <div class="file-input-wrapper">
-                <input type="file" id="imageInput" accept="image/*" title="Upload an image to ask about">
+                <input type="file" id="imageInput" accept="image/*" title="पूछने के लिए एक छवि अपलोड करें">
                 <i class="fas fa-image"></i>
             </div>
         </div>
@@ -728,14 +755,14 @@
 
         <div id="outputArea">
             <div id="outputTextContent">
-                <div id="outputPlaceholder">Your answers will appear here. ✨</div>
+                <div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>
             </div>
-            <button id="speakerBtn" title="Listen to the answer">
+            <button id="speakerBtn" title="उत्तर सुनें">
                 <i class="fas fa-volume-up"></i>
             </button>
         </div>
         
-        <button class="send-btn" id="sendBtn" title="Get Answer">
+        <button class="send-btn" id="sendBtn" title="उत्तर प्राप्त करें">
             <i class="fas fa-paper-plane"></i>
         </button>
     </main>
@@ -748,13 +775,13 @@
             </button>
             <video id="cameraVideo" autoplay playsinline></video>
             <div class="camera-controls">
-                <button class="camera-btn" id="switchCameraBtn" title="Switch camera">
+                <button class="camera-btn" id="switchCameraBtn" title="कैमरा बदलें">
                     <i class="fas fa-sync-alt"></i>
                 </button>
-                <button class="camera-btn capture-btn" id="captureBtn" title="Capture photo">
+                <button class="camera-btn capture-btn" id="captureBtn" title="फोटो खींचिए">
                     <i class="fas fa-camera"></i>
                 </button>
-                <button class="camera-btn" id="flashBtn" title="Toggle flash">
+                <button class="camera-btn" id="flashBtn" title="फ़्लैश टॉगल करें">
                     <i class="fas fa-bolt"></i>
                 </button>
             </div>
@@ -767,15 +794,17 @@
             <button class="close-btn" id="closeMainMenuBtn">
                 <i class="fas fa-times"></i>
             </button>
-            <h2>🚀 Menu</h2>
+            <h2>🚀 मेनू</h2>
             <ul id="mainMenuOptions">
-                <li><button id="openHistoryBtn"><i class="fas fa-history"></i> Answer History</button></li>
-                <li><button id="downloadAppBtn"><i class="fas fa-download"></i> Download App (PWA)</button></li>
-                <li><button id="shareAppBtn"><i class="fas fa-share-alt"></i> Share App</button></li>
-                <li class="menu-divider"></li>
-                <li><button id="newGkQuestionBtn"><i class="fas fa-brain"></i> New GK Question</button></li>
-                <li><button id="newMathProblemBtn"><i class="fas fa-calculator"></i> New Math Problem</button></li>
-            </ul>
+                <li><button id="openHistoryBtn"><i class="fas fa-history"></i> उत्तर इतिहास</button></li>
+             
+                <li><button id="newGkQuestionBtn"><i class="fas fa-brain"></i> नया सामान्य ज्ञान प्रश्न</button></li>
+                <li><button id="newMathProblemBtn"><i class="fas fa-calculator"></i> नई गणित समस्या</button></li>
+        
+                 <li class="menu-divider"></li>
+                 <li><button id="downloadAppBtn"><i class="fas fa-download"></i> ऐप डाउनलोड करें (PWA)</button></li>
+                <li><button id="shareAppBtn"><i class="fas fa-share-alt"></i> ऐप साझा करें</button></li>
+              </ul>
         </div>
     </div>
 
@@ -785,10 +814,10 @@
             <button class="close-btn" id="closeHistoryBtn">
                 <i class="fas fa-times"></i>
             </button>
-            <h2>📚 Answer History</h2>
+            <h2>📚 उत्तर इतिहास</h2>
             <!-- New PDF Download Button -->
-            <button id="downloadHistoryPdfBtn" title="Download history as PDF">
-                <i class="fas fa-file-pdf"></i> PDF डाउनलोड करें
+            <button id="downloadHistoryPdfBtn" title="पूरा इतिहास PDF के रूप में डाउनलोड करें">
+                <i class="fas fa-file-pdf"></i> सभी इतिहास PDF डाउनलोड करें
             </button>
             <ul id="historyList">
                 <!-- History items will be inserted here by JavaScript -->
@@ -845,14 +874,17 @@
         let hindiVoice = null;
 
         // API Configuration
-        const GEMINI_API_KEY = 'AIzaSyDHy9J04dI8LdK1ijNJMrRXubJ5ucx9rdk';
+        const GEMINI_API_KEY = 'AIzaSyDHy9J04dI8LdK1ijNJMrRXubJ5ucx9rdk'; // Keep your API key private in a real app
 
         // Variables for image data, history, and camera
         let uploadedImageData = null;
-        let history = [];
+        let history = []; // This will be loaded from localStorage
         let currentStream = null;
         let currentFacingMode = 'environment';
         let flashEnabled = false;
+
+        const APP_NAME = "YADAV Sir AI Math & GK Solver";
+        const APP_URL = window.location.href; // Get current URL for linking
 
         // Speech Recognition setup
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -860,12 +892,36 @@
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
             recognition.interimResults = false;
-            recognition.lang = 'en-US';
+            recognition.lang = 'hi-IN'; // Set default language to Hindi for better recognition
             recognition.continuous = false;
         } else {
             micBtn.disabled = true;
-            micBtn.title = "Speech recognition not supported in this browser";
+            micBtn.title = "आपके ब्राउज़र में भाषण पहचान समर्थित नहीं है";
         }
+
+        // --- History Persistence Functions ---
+        const saveHistory = () => {
+            try {
+                localStorage.setItem('aiSolverHistory', JSON.stringify(history));
+                console.log('History saved to localStorage.');
+            } catch (e) {
+                console.error('इतिहास को localStorage में सहेजने में त्रुटि हुई:', e);
+                alert('इतिहास सहेजने में त्रुटि हुई। शायद स्टोरेज भरा हुआ है।');
+            }
+        };
+
+        const loadHistory = () => {
+            try {
+                const storedHistory = localStorage.getItem('aiSolverHistory');
+                if (storedHistory) {
+                    history = JSON.parse(storedHistory);
+                    console.log('History loaded from localStorage.');
+                }
+            } catch (e) {
+                console.error('इतिहास को localStorage से लोड करने में त्रुटि हुई:', e);
+                history = []; // Reset history if loading fails
+            }
+        };
 
         // --- Helper Functions ---
 
@@ -912,8 +968,8 @@
                 }
 
             } catch (error) {
-                console.error('Error accessing camera:', error);
-                outputTextContent.innerHTML = `📷 Camera access error: ${error.message}. Please allow camera permissions and try again.`;
+                console.error('कैमरा एक्सेस करने में त्रुटि:', error);
+                outputTextContent.innerHTML = `📷 कैमरा एक्सेस त्रुटि: ${error.message}. कृपया कैमरा अनुमतियों की अनुमति दें और पुनः प्रयास करें।`;
             }
         };
 
@@ -945,11 +1001,11 @@
                             'linear-gradient(135deg, #ffd700 0%, #ffb300 100%)' : 
                             'rgba(255, 255, 255, 0.9)';
                     } catch (error) {
-                        console.error('Flash control error:', error);
-                        outputTextContent.innerHTML = 'Failed to toggle flash. Device might not support it or an error occurred.';
+                        console.error('फ़्लैश नियंत्रण त्रुटि:', error);
+                        outputTextContent.innerHTML = 'फ़्लैश टॉगल करने में विफल। डिवाइस इसे सपोर्ट नहीं करता है या कोई त्रुटि हुई है।';
                     }
                 } else {
-                    outputTextContent.innerHTML = 'Flash (torch) is not supported on this camera.';
+                    outputTextContent.innerHTML = 'इस कैमरे पर फ़्लैश (टॉर्च) समर्थित नहीं है।';
                 }
             }
         };
@@ -973,8 +1029,8 @@
                 data: dataURL.split(',')[1]
             };
             
-            questionInput.placeholder = "📷🖼️ Photo captured! Add a question about it (optional)";
-            outputTextContent.innerHTML = `📷 Photo captured successfully! You can now ask questions about it.`;
+            questionInput.placeholder = "📷🖼️ फोटो खींची गई! इसके बारे में एक प्रश्न जोड़ें (वैकल्पिक)";
+            outputTextContent.innerHTML = `📷 फोटो सफलतापूर्वक कैप्चर की गई! अब आप इसके बारे में प्रश्न पूछ सकते हैं।`;
             
             stopCamera();
         };
@@ -982,13 +1038,15 @@
         // --- Speech Synthesis Functions ---
         const loadVoices = () => {
             const voices = window.speechSynthesis.getVoices();
-            hindiVoice = voices.find(voice => voice.lang === 'hi-IN');
+            // Try to find a Hindi voice first
+            hindiVoice = voices.find(voice => voice.lang === 'hi-IN' || voice.name.includes('Hindi'));
             if (!hindiVoice) {
-                console.warn("Hindi voice (hi-IN) not found. Falling back to a suitable English voice.");
+                console.warn("हिंदी आवाज (hi-IN) नहीं मिली। अंग्रेजी आवाज पर वापस आ रहा है।");
+                // Fallback to a suitable English voice if Hindi is not available
                 hindiVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
             }
             if (!hindiVoice) {
-                console.error("No voices found at all. Text-to-speech may not work.");
+                console.error("कोई आवाज नहीं मिली। टेक्स्ट-टू-स्पीच काम नहीं कर सकता है।");
                 speakerBtn.style.display = 'none';
                 // Update visibility of existing history speaker buttons
                 document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
@@ -1000,16 +1058,16 @@
 
         if ('speechSynthesis' in window) {
             window.speechSynthesis.onvoiceschanged = loadVoices;
-            loadVoices();
+            loadVoices(); // Initial load
         } else {
-            console.warn("Speech Synthesis API not supported in this browser.");
+            console.warn("यह ब्राउज़र स्पीच सिंथेसिस API का समर्थन नहीं करता है।");
             speakerBtn.style.display = 'none';
             document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
         }
 
         const speakAnswer = (text, targetButton) => {
-            if (!'speechSynthesis' in window || !hindiVoice) {
-                console.error('Speech synthesis not ready (API not supported or no voices loaded).');
+            if (!('speechSynthesis' in window) || !hindiVoice) {
+                console.error('भाषण संश्लेषण तैयार नहीं है (API समर्थित नहीं है या कोई आवाज लोड नहीं हुई है)।');
                 alert('क्षमा करें, आपका ब्राउज़र पाठ से वाक् का समर्थन नहीं करता है या आवाज़ें लोड नहीं हुई हैं।');
                 return;
             }
@@ -1029,7 +1087,7 @@
                     targetButton.classList.add('playing');
                     targetButton.title = 'बोलना बंद करें';
                 }
-                console.log('Speaking started for:', text.substring(0, Math.min(50, text.length)) + '...');
+                console.log('बोलना शुरू हुआ:', text.substring(0, Math.min(50, text.length)) + '...');
             };
             currentUtterance.onend = () => {
                 isSpeaking = false;
@@ -1038,10 +1096,10 @@
                     targetButton.classList.remove('playing');
                     targetButton.title = 'उत्तर सुनें';
                 }
-                console.log('Speaking ended.');
+                console.log('बोलना समाप्त हुआ।');
             };
             currentUtterance.onerror = (event) => {
-                console.error('Speech synthesis error:', event);
+                console.error('भाषण संश्लेषण त्रुटि:', event);
                 isSpeaking = false;
                 if (targetButton) {
                     targetButton.innerHTML = '<i class="fas fa-volume-up"></i>';
@@ -1064,20 +1122,20 @@
                 btn.classList.remove('playing');
                 btn.title = 'उत्तर सुनें';
             });
-            console.log('Speaking stopped.');
+            console.log('बोलना बंद किया गया।');
         };
 
 
         // --- Enhanced AI Query Function ---
         const performAIQuery = async (text, imageData) => {
 
-            let modelName = 'gemini-2.0-flash-exp';
+            let modelName = 'gemini-1.5-flash-latest'; // Using a more recent model
             const parts = [];
 
             if (text.trim()) {
                 let prompt = text.trim();
                 if (imageData) {
-                    prompt = `Analyze this image and answer: ${prompt}. Provide a clear, detailed response.`;
+                    prompt = `Analyze this image and answer: ${prompt}. Provide a clear, detailed response. If it's a math problem in the image, solve it step by step. If it's GK, provide factual information.`;
                 } else {
                     const lowerCasePrompt = prompt.toLowerCase();
                     if (lowerCasePrompt.match(/(\d+\s*[\+\-\*\/xX÷]\s*\d+)|(solve)|(calculate)|(what is the result of)|(evaluate)|(integral)|(derivative)|(equation)|(find x)|(simplify)/i)) {
@@ -1101,7 +1159,7 @@
             }
 
             if (parts.length === 0) {
-                return 'Please enter a question or upload an image.';
+                return 'कृपया एक प्रश्न दर्ज करें या एक छवि अपलोड करें।';
             }
 
             const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
@@ -1131,19 +1189,19 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('Gemini API Error Response:', errorData);
+                    console.error('Gemini API त्रुटि प्रतिक्रिया:', errorData);
                     
                     switch (response.status) {
                         case 400:
-                            return `API Error: Invalid request or input. ${errorData.error?.message || ''} Please check your input.`;
+                            return `API त्रुटि: अमान्य अनुरोध या इनपुट। ${errorData.error?.message || ''} कृपया अपना इनपुट जांचें।`;
                         case 403:
-                            return `API Error: Access denied. Please verify your API key and billing setup.`;
+                            return `API त्रुटि: एक्सेस अस्वीकृत। कृपया अपनी API कुंजी और बिलिंग सेटअप सत्यापित करें।`;
                         case 429:
-                            return `API Error: Rate limit exceeded. Please wait a moment and try again.`;
+                            return `API त्रुटि: दर सीमा पार हो गई। कृपया थोड़ी देर प्रतीक्षा करें और पुनः प्रयास करें।`;
                         case 500:
-                            return `API Error: Server error. Please try again later.`;
+                            return `API त्रुटि: सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।`;
                         default:
-                            return `API Error (${response.status}): ${errorData.error?.message || 'Unknown error occurred'}`;
+                            return `API त्रुटि (${response.status}): ${errorData.error?.message || 'अज्ञात त्रुटि हुई'}`;
                     }
                 }
 
@@ -1154,19 +1212,19 @@
                     data.candidates[0].content.parts.length > 0 && data.candidates[0].content.parts[0].text) {
                     return data.candidates[0].content.parts[0].text.trim();
                 } else {
-                    console.warn('Unexpected API response structure or blocked content:', data);
+                    console.warn('अप्रत्याशित API प्रतिक्रिया संरचना या अवरुद्ध सामग्री:', data);
                     if (data.promptFeedback && data.promptFeedback.blockReason) {
-                        return `Content blocked by safety filters: ${data.promptFeedback.blockReason}. Please try rephrasing your question.`;
+                        return `सामग्री सुरक्षा फ़िल्टर द्वारा अवरुद्ध: ${data.promptFeedback.blockReason}. कृपया अपना प्रश्न दोबारा लिखें।`;
                     }
-                    return "No response generated. This might be due to safety settings or an empty response. Please try rephrasing your question.";
+                    return "कोई प्रतिक्रिया उत्पन्न नहीं हुई। यह सुरक्षा सेटिंग्स या एक खाली प्रतिक्रिया के कारण हो सकता है। कृपया अपना प्रश्न दोबारा लिखें।";
                 }
 
             } catch (error) {
-                console.error('AI query error:', error);
+                console.error('AI क्वेरी त्रुटि:', error);
                 if (error.message.includes('Failed to fetch')) {
-                    return `Network error: Please check your internet connection and ensure the page is served over HTTPS.`;
+                    return `नेटवर्क त्रुटि: कृपया अपना इंटरनेट कनेक्शन जांचें और सुनिश्चित करें कि पृष्ठ HTTPS पर सेवा प्रदान कर रहा है।`;
                 }
-                return `Error: ${error.message}`;
+                return `त्रुटि: ${error.message}`;
             }
         };
 
@@ -1174,36 +1232,93 @@
         const addToHistory = (question, answer, imageUsed = false) => {
             const timestamp = new Date().toLocaleString();
             history.unshift({ question, answer, imageUsed, timestamp });
-            if (history.length > 50) {
+            if (history.length > 50) { // Keep history manageable, e.g., max 50 entries
                 history.pop();
             }
-            // history list is only updated when modal is opened via displayHistory()
+            saveHistory(); // Save to localStorage immediately
         };
+
+        // Function to generate and save PDF for a single history entry
+        const generateSinglePdf = async (entry) => {
+            stopSpeaking();
+            const tempDiv = document.createElement('div');
+            tempDiv.style.fontFamily = 'Arial, sans-serif';
+            tempDiv.style.padding = '20px';
+            tempDiv.style.color = '#333';
+            tempDiv.style.lineHeight = '1.6';
+
+            tempDiv.innerHTML = `
+                <h2 style="color: #667eea; text-align: center; margin-bottom: 20px;">${APP_NAME}</h2>
+                <h3 style="color: #764ba2;">प्रश्न:</h3>
+                <p>${entry.question || (entry.imageUsed ? 'छवि-आधारित प्रश्न' : 'कोई प्रश्न नहीं')}</p>
+                <h3 style="color: #764ba2;">उत्तर:</h3>
+                <p>${entry.answer.replace(/\n/g, '<br>')}</p>
+                <small style="display: block; text-align: right; margin-top: 20px; color: #777;">तिथि: ${entry.timestamp}</small>
+                <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.8em; color: #999;">
+                    <p style="margin: 5px 0;">द्वारा संचालित: ${APP_NAME}</p>
+                    <p style="margin: 5px 0;"><a href="${APP_URL}" target="_blank" style="color: #667eea; text-decoration: none;">यहाँ क्लिक करें</a></p>
+                </div>
+            `;
+
+            const opt = {
+                margin: 0.5,
+                filename: `YADAV_Sir_AI_Solver_${entry.timestamp.replace(/[:\/,\s]/g, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: false, dpi: 192, letterRendering: true }, // Set logging to false for cleaner console
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            const historyModalContent = historyModal.querySelector('.modal-content');
+            const originalContent = historyModalContent.innerHTML;
+            
+            // Show loading state in history modal
+            historyModalContent.innerHTML = `
+                <div style="text-align: center; padding: 50px;">
+                    <div class="loading" style="width: 40px; height: 40px; border-width: 5px; margin: 0 auto 20px;"></div>
+                    <p style="color: #667eea; font-size: 1.2em;">PDF तैयार हो रही है... कृपया प्रतीक्षा करें।</p>
+                </div>
+            `;
+            downloadHistoryPdfBtn.disabled = true; // Disable main PDF button
+            document.querySelectorAll('.single-pdf-btn').forEach(btn => btn.disabled = true); // Disable individual PDF buttons
+
+            try {
+                await html2pdf().from(tempDiv).set(opt).save();
+                console.log('एकल PDF सफलतापूर्वक डाउनलोड हुआ!');
+            } catch (error) {
+                console.error('एकल PDF जनरेशन विफल हुआ:', error);
+                alert('PDF जनरेशन में त्रुटि हुई। कृपया पुनः प्रयास करें।');
+            } finally {
+                // Restore original content and re-enable buttons
+                historyModalContent.innerHTML = originalContent;
+                displayHistory(); // Re-render to re-attach event listeners and re-enable buttons
+            }
+        };
+
 
         // Function to display history in the modal
         const displayHistory = () => {
             historyList.innerHTML = ''; // Clear existing list items
             if (history.length === 0) {
                 const li = document.createElement('li');
-                li.innerHTML = '<em>No query history yet. Start asking questions! 🤔</em>';
+                li.innerHTML = '<em>अभी कोई इतिहास उपलब्ध नहीं है। प्रश्न पूछना शुरू करें! 🤔</em>';
                 historyList.appendChild(li);
                 downloadHistoryPdfBtn.disabled = true; // Disable PDF button if no history
             } else {
                 downloadHistoryPdfBtn.disabled = false; // Enable PDF button if history exists
             }
 
-            history.forEach((entry) => {
+            history.forEach((entry, index) => {
                 const li = document.createElement('li');
                 let questionDisplay = entry.question || '';
                 if (entry.imageUsed) {
-                    questionDisplay = `🖼️ ${questionDisplay.length > 0 ? questionDisplay : 'Image Query'}`;
+                    questionDisplay = `🖼️ ${questionDisplay.length > 0 ? questionDisplay : 'छवि प्रश्न'}`;
                 }
                 if (questionDisplay.length > 100) {
                     questionDisplay = questionDisplay.substring(0, 100) + '...';
                 }
 
                 const questionDiv = document.createElement('div');
-                questionDiv.innerHTML = `<strong>Q:</strong> ${questionDisplay}`;
+                questionDiv.innerHTML = `<strong>प्र:</strong> ${questionDisplay}`;
                 li.appendChild(questionDiv);
 
                 const answerContentDiv = document.createElement('div');
@@ -1211,7 +1326,7 @@
 
                 const answerTextWrapper = document.createElement('span');
                 answerTextWrapper.classList.add('answer-text-wrapper');
-                answerTextWrapper.textContent = `A: ${entry.answer}`; // Use textContent for clean text, innerHTML for snippet not needed here
+                answerTextWrapper.textContent = `उ: ${entry.answer}`; 
                 answerContentDiv.appendChild(answerTextWrapper);
 
                 const historySpeakerBtn = document.createElement('button');
@@ -1235,6 +1350,18 @@
                 });
                 answerContentDiv.appendChild(historySpeakerBtn);
 
+                // Add individual PDF download button
+                const singlePdfBtn = document.createElement('button');
+                singlePdfBtn.classList.add('single-pdf-btn');
+                singlePdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+                singlePdfBtn.title = 'यह उत्तर PDF डाउनलोड करें';
+                singlePdfBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    generateSinglePdf(entry); // Pass the specific entry to the function
+                });
+                answerContentDiv.appendChild(singlePdfBtn);
+
+
                 li.appendChild(answerContentDiv);
 
                 const timestampSmall = document.createElement('small');
@@ -1247,7 +1374,11 @@
 
         // Enhanced loading animation
         const showLoading = () => {
-            outputTextContent.innerHTML = '<div class="loading"></div> <span style="margin-left: 10px;">AI is thinking...</span>';
+            outputTextContent.innerHTML = '<div class="loading"></div> <span style="margin-left: 10px;">AI सोच रहा है...</span>';
+            // Also update placeholder if needed
+            if (outputPlaceholder) {
+                outputPlaceholder.style.display = 'none';
+            }
         };
 
         // Function to prepare input for a new query type
@@ -1255,20 +1386,20 @@
             questionInput.value = '';
             uploadedImageData = null;
             imagePreview.style.display = 'none';
-            outputTextContent.innerHTML = '<div id="outputPlaceholder">Your answers will appear here. ✨</div>';
+            outputTextContent.innerHTML = '<div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>';
+            speakerBtn.style.display = 'none'; // Hide speaker button on clear
             mainMenuModal.classList.remove('show');
             stopSpeaking();
-            speakerBtn.style.display = 'none';
-
+            
             if (type === 'gk') {
-                questionInput.placeholder = '💡 Ask a General Knowledge question (e.g., "Who discovered gravity?")';
-                outputTextContent.innerHTML = `<div id="outputPlaceholder">Ready for a GK question! Type it in the box.</div>`;
+                questionInput.placeholder = '💡 सामान्य ज्ञान का प्रश्न पूछें (जैसे, "गुरुत्वाकर्षण की खोज किसने की?")';
+                outputTextContent.innerHTML = `<div id="outputPlaceholder">सामान्य ज्ञान के प्रश्न के लिए तैयार! बॉक्स में टाइप करें।</div>`;
             } else if (type === 'math') {
-                questionInput.placeholder = '🔢 Ask a Math problem (e.g., "Solve 2x + 5 = 11")';
-                outputTextContent.innerHTML = `<div id="outputPlaceholder">Ready for a Math problem! Type it in the box.</div>`;
+                questionInput.placeholder = '🔢 गणित की समस्या पूछें (जैसे, "2x + 5 = 11 हल करें")';
+                outputTextContent.innerHTML = `<div id="outputPlaceholder">गणित की समस्या के लिए तैयार! बॉक्स में टाइप करें।</div>`;
             } else {
-                questionInput.placeholder = 'Ask a math problem, a GK question, or anything!';
-                outputTextContent.innerHTML = '<div id="outputPlaceholder">Your answers will appear here. ✨</div>';
+                questionInput.placeholder = 'गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!';
+                outputTextContent.innerHTML = '<div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>';
             }
             questionInput.focus();
         };
@@ -1302,27 +1433,27 @@
             speakerBtn.style.display = 'none';
 
             recognition.start();
-            outputTextContent.innerHTML = '🔊 Listening... Please speak your question.';
-            questionInput.placeholder = 'Listening...';
+            outputTextContent.innerHTML = '🔊 सुन रहा है... कृपया अपना प्रश्न बोलें।';
+            questionInput.placeholder = 'सुन रहा है...';
         });
 
         if (recognition) {
             recognition.onresult = (event) => {
                 const speechResult = event.results[0][0].transcript;
                 questionInput.value = speechResult;
-                outputTextContent.innerHTML = '<div id="outputPlaceholder">🔊 Speech recognized. Click Send to get answer.</div>';
+                outputTextContent.innerHTML = '<div id="outputPlaceholder">🔊 भाषण पहचाना गया। उत्तर पाने के लिए भेजें पर क्लिक करें।</div>';
             };
 
             recognition.onend = () => {
                 micBtn.disabled = false;
                 micBtn.style.background = '';
                 micBtn.querySelector('i').classList.remove('fa-beat');
-                questionInput.placeholder = 'Ask a math problem, a GK question, or anything!';
+                questionInput.placeholder = 'गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!';
             };
 
             recognition.onerror = (event) => {
-                console.error('Speech recognition error:', event.error);
-                outputTextContent.innerHTML = `🔊 Speech recognition error: ${event.error}. Please try again.`;
+                console.error('भाषण पहचान त्रुटि:', event.error);
+                outputTextContent.innerHTML = `🔊 भाषण पहचान त्रुटि: ${event.error}. कृपया पुनः प्रयास करें।`;
                 micBtn.disabled = false;
                 micBtn.style.background = '';
                 micBtn.querySelector('i').classList.remove('fa-beat');
@@ -1341,8 +1472,8 @@
                         mimeType: file.type,
                         data: reader.result.split(',')[1]
                     };
-                    questionInput.placeholder = `🖼️ Image uploaded! Add a question about it (optional)`;
-                    outputTextContent.innerHTML = `<div id="outputPlaceholder">🖼️ Image loaded successfully! You can now ask questions about it.</div>`;
+                    questionInput.placeholder = `🖼️ छवि अपलोड की गई! इसके बारे में एक प्रश्न जोड़ें (वैकल्पिक)`;
+                    outputTextContent.innerHTML = `<div id="outputPlaceholder">🖼️ छवि सफलतापूर्वक लोड हुई! अब आप इसके बारे में प्रश्न पूछ सकते हैं।</div>`;
                     stopSpeaking();
                     speakerBtn.style.display = 'none';
                 };
@@ -1351,8 +1482,8 @@
                 imagePreview.src = '';
                 imagePreview.style.display = 'none';
                 uploadedImageData = null;
-                questionInput.placeholder = `Ask a math problem, a GK question, or anything!`;
-                outputTextContent.innerHTML = '<div id="outputPlaceholder">Your answers will appear here. ✨</div>';
+                questionInput.placeholder = `गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!`;
+                outputTextContent.innerHTML = '<div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>';
                 stopSpeaking();
                 speakerBtn.style.display = 'none';
             }
@@ -1371,7 +1502,7 @@
             const textQuestion = questionInput.value.trim();
 
             if (!textQuestion && !uploadedImageData) {
-                outputTextContent.innerHTML = '<div id="outputPlaceholder">💡 Please type a question or upload an image to get started!</div>';
+                outputTextContent.innerHTML = '<div id="outputPlaceholder">💡 कृपया शुरू करने के लिए एक प्रश्न टाइप करें या एक छवि अपलोड करें!</div>';
                 return;
             }
 
@@ -1384,7 +1515,7 @@
                 const answer = await performAIQuery(textQuestion, uploadedImageData);
                 outputTextContent.innerHTML = answer.replace(/\n/g, '<br>');
 
-                const isNotError = !answer.startsWith("API Error:") && !answer.startsWith("Network error:") && !answer.startsWith("Error:") && !answer.startsWith("Content blocked by safety filters:");
+                const isNotError = !answer.startsWith("API त्रुटि:") && !answer.startsWith("नेटवर्क त्रुटि:") && !answer.startsWith("त्रुटि:") && !answer.startsWith("सामग्री सुरक्षा फ़िल्टर द्वारा अवरुद्ध:");
 
                 if (isNotError) {
                     addToHistory(textQuestion, answer, !!uploadedImageData);
@@ -1396,7 +1527,7 @@
                         speakerBtn.style.display = 'flex';
                         speakerBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
                         speakerBtn.classList.remove('playing');
-                        console.log("Main speaker button shown for GK/Quiz answer.");
+                        console.log("GK/क्विज़ उत्तर के लिए मुख्य स्पीकर बटन दिखाया गया।");
                     } else {
                         speakerBtn.style.display = 'none';
                     }
@@ -1418,7 +1549,7 @@
                 if (answerText && answerText !== outputPlaceholder.innerText.trim()) { 
                     speakAnswer(answerText, speakerBtn);
                 } else {
-                    console.warn('No answer content to speak from main output.');
+                    console.warn('मुख्य आउटपुट से बोलने के लिए कोई उत्तर सामग्री नहीं है।');
                     alert('कोई उत्तर नहीं है जिसे सुना जा सके।');
                 }
             }
@@ -1435,21 +1566,21 @@
                 return;
             }
 
-            const shareText = `YADAV Sir AI Math & GK Solver\n\n` +
+            const shareText = `${APP_NAME}\n\n` +
                                `प्रश्न: ${currentQuestion || (uploadedImageData ? 'छवि-आधारित प्रश्न' : 'कोई प्रश्न नहीं')}\n\n` +
                                `उत्तर: ${currentAnswer || 'कोई उत्तर उपलब्ध नहीं'}\n\n` +
-                               `इस AI ऐप से अपनी समस्याओं का समाधान पाएं: ${window.location.href}`;
+                               `इस AI ऐप से अपनी समस्याओं का समाधान पाएं: ${APP_URL}`;
 
             if (navigator.share) {
                 try {
                     await navigator.share({
-                        title: 'AI Math & GK Solver Result',
+                        title: `${APP_NAME} परिणाम`,
                         text: shareText,
-                        url: window.location.href
+                        url: APP_URL
                     });
-                    console.log('Content shared successfully!');
+                    console.log('सामग्री सफलतापूर्वक साझा की गई!');
                 } catch (error) {
-                    console.error('Error sharing:', error);
+                    console.error('साझा करने में त्रुटि:', error);
                     if (error.name !== 'AbortError') {
                         alert(`साझा करने में असमर्थ: ${error.message}`);
                     }
@@ -1495,19 +1626,19 @@
             if (navigator.share) {
                 try {
                     await navigator.share({
-                        title: ' YADAV Sir AI Math & GK Solver',
+                        title: APP_NAME,
                         text: 'गणित और सामान्य ज्ञान के सवालों के झटपट जवाब पाएं इस AI ऐप से!',
-                        url: window.location.href
+                        url: APP_URL
                     });
-                    console.log('App shared successfully!');
+                    console.log('ऐप सफलतापूर्वक साझा किया गया!');
                 } catch (error) {
-                    console.error('Error sharing app:', error);
+                    console.error('ऐप साझा करने में त्रुटि:', error);
                     if (error.name !== 'AbortError') {
                         alert(`ऐप साझा करने में असमर्थ: ${error.message}`);
                     }
                 }
             } else {
-                alert('आपका ब्राउज़र सीधे साझा करने का समर्थन नहीं करता है। ऐप का URL यहाँ है:\n\n' + window.location.href + '\n\nइसे मैन्युअल रूप से कॉपी करें और साझा करें।');
+                alert('आपका ब्राउज़र सीधे साझा करने का समर्थन नहीं करता है। ऐप का URL यहाँ है:\n\n' + APP_URL + '\n\nइसे मैन्युअल रूप से कॉपी करें और साझा करें।');
             }
             mainMenuModal.classList.remove('show');
         });
@@ -1532,8 +1663,8 @@
             }
         });
 
-        // --- PDF Download Logic ---
-        downloadHistoryPdfBtn.addEventListener('click', () => {
+        // --- PDF Download All History Logic ---
+        downloadHistoryPdfBtn.addEventListener('click', async () => {
             if (history.length === 0) {
                 alert('डाउनलोड करने के लिए कोई इतिहास उपलब्ध नहीं है।');
                 return;
@@ -1541,45 +1672,73 @@
 
             stopSpeaking(); // Stop any ongoing speech before PDF generation
 
-            const element = historyList; // The element to convert to PDF
+            const tempDiv = document.createElement('div');
+            tempDiv.style.fontFamily = 'Arial, sans-serif';
+            tempDiv.style.padding = '20px';
+            tempDiv.style.color = '#333';
+            tempDiv.style.lineHeight = '1.6';
+
+            let historyContentHtml = `<h1 style="color: #667eea; text-align: center; margin-bottom: 20px;">${APP_NAME} - उत्तर इतिहास</h1>`;
+            history.forEach((entry, index) => {
+                const questionDisplay = entry.question || (entry.imageUsed ? 'छवि-आधारित प्रश्न' : 'कोई प्रश्न नहीं');
+                historyContentHtml += `
+                    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #eee; border-radius: 8px;">
+                        <h3 style="color: #764ba2; margin-top: 0;">प्रश्न ${history.length - index}:</h3>
+                        <p>${questionDisplay}</p>
+                        <h3 style="color: #764ba2;">उत्तर:</h3>
+                        <p>${entry.answer.replace(/\n/g, '<br>')}</p>
+                        <small style="display: block; text-align: right; color: #777;">तिथि: ${entry.timestamp}</small>
+                    </div>
+                `;
+            });
+
+            // Add the app footer to the end of the history content
+            historyContentHtml += `
+                <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.8em; color: #999;">
+                    <p style="margin: 5px 0;">द्वारा संचालित: ${APP_NAME}</p>
+                    <p style="margin: 5px 0;"><a href="${APP_URL}" target="_blank" style="color: #667eea; text-decoration: none;">यहाँ क्लिक करें</a></p>
+                </div>
+            `;
+            tempDiv.innerHTML = historyContentHtml;
+
+
             const opt = {
                 margin: 0.5,
-                filename: 'YADAV_Sir_AI_Solver_History.pdf',
+                filename: 'YADAV_Sir_AI_Solver_All_History.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                html2canvas: { scale: 2, logging: false, dpi: 192, letterRendering: true },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
             // Show a temporary loading message in the modal
-            const originalContent = historyModal.querySelector('.modal-content').innerHTML;
-            historyModal.querySelector('.modal-content').innerHTML = `
+            const historyModalContent = historyModal.querySelector('.modal-content');
+            const originalContent = historyModalContent.innerHTML;
+            historyModalContent.innerHTML = `
                 <div style="text-align: center; padding: 50px;">
                     <div class="loading" style="width: 40px; height: 40px; border-width: 5px; margin: 0 auto 20px;"></div>
                     <p style="color: #667eea; font-size: 1.2em;">PDF तैयार हो रही है... कृपया प्रतीक्षा करें।</p>
                 </div>
             `;
             downloadHistoryPdfBtn.disabled = true; // Disable button during process
+            document.querySelectorAll('.single-pdf-btn').forEach(btn => btn.disabled = true); // Disable individual PDF buttons
 
-
-            html2pdf().from(element).set(opt).save().then(() => {
-                // Restore original content after PDF generation
-                historyModal.querySelector('.modal-content').innerHTML = originalContent;
-                displayHistory(); // Re-render history list to re-attach event listeners
-                console.log('PDF downloaded successfully!');
-                downloadHistoryPdfBtn.disabled = false;
-            }).catch(error => {
-                console.error('PDF generation failed:', error);
+            try {
+                await html2pdf().from(tempDiv).set(opt).save();
+                console.log('सभी इतिहास PDF सफलतापूर्वक डाउनलोड हुआ!');
+            } catch (error) {
+                console.error('PDF जनरेशन विफल हुआ:', error);
                 alert('PDF जनरेशन में त्रुटि हुई। कृपया पुनः प्रयास करें।');
-                // Restore original content on error too
-                historyModal.querySelector('.modal-content').innerHTML = originalContent;
-                displayHistory(); // Re-render history list
-                downloadHistoryPdfBtn.disabled = false;
-            });
+            } finally {
+                // Restore original content after PDF generation
+                historyModalContent.innerHTML = originalContent;
+                displayHistory(); // Re-render history list to re-attach event listeners and re-enable buttons
+            }
         });
 
 
-        // Initial setup: display empty history
-        displayHistory();
+        // Initial setup: load history and display it
+        loadHistory();
+        displayHistory(); // Call once on load to show initial history
     });
 </script>
 </body>
