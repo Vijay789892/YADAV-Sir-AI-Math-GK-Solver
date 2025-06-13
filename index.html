@@ -796,12 +796,11 @@
             </button>
             <h2>🚀 मेनू</h2>
             <ul id="mainMenuOptions">
-                <li><button id="openHistoryBtn"><i class="fas fa-history"></i> उत्तर इतिहास</button></li>
+                <li><button id="openHistoryBtn"><i class="fas fa-history"></i> उत्तर इतिहास और PDF डाउनलोड  </button></li>
              
                 <li><button id="newGkQuestionBtn"><i class="fas fa-brain"></i> नया सामान्य ज्ञान प्रश्न</button></li>
                 <li><button id="newMathProblemBtn"><i class="fas fa-calculator"></i> नई गणित समस्या</button></li>
-                 <button class="cta-button" id="cta-menu-btn" onclick="window.open('https://yadavsir.vercel.app/', '_blank')">📝 YADAV Sir AI से Doubt clear करे
-                 </button>
+                <button class="cta-button" id="cta-menu-btn" onclick="window.open('https://yadavsir.vercel.app/', '_blank')">📝 YADAV Sir AI से Doubt clear करे</button>
         
                  <li class="menu-divider"></li>
                  <li><button id="downloadAppBtn"><i class="fas fa-download"></i> ऐप डाउनलोड करें (PWA)</button></li>
@@ -1262,8 +1261,8 @@
                 <p>${entry.answer.replace(/\n/g, '<br>')}</p>
                 <small style="display: block; text-align: right; margin-top: 20px; color: #777;">तिथि: ${entry.timestamp}</small>
                 <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.8em; color: #999;">
-                    <p style="margin: 5px 0;">द्वारा संचालित: ${APP_NAME}</p>
-                    <p style="margin: 5px 0;"><a href="${APP_URL}" target="_blank" style="color: #667eea; text-decoration: none;">यहाँ क्लिक करें</a></p>
+                    <p style="margin: 5px 0;">©YADAV_Sir_AI_Solver_All_History</p>
+                    <p style="margin: 5px 0;"><a href="${APP_URL}" target="_blank" style="color: #667eea; text-decoration: none;">किसी भी प्रकार के प्रश्न का 1 मिनट उत्तर पाये Ai से -यहाँ क्लिक करें</a></p>
                 </div>
             `;
 
@@ -1489,7 +1488,7 @@
                 imagePreview.src = '';
                 imagePreview.style.display = 'none';
                 uploadedImageData = null;
-                questionInput.placeholder = `गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!`;
+                questionInput.placeholder = `गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ कुछ भी पूछें!`;
                 outputTextContent.innerHTML = '<div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>';
                 stopSpeaking();
                 speakerBtn.style.display = 'none';
@@ -1702,8 +1701,8 @@
             // आपका फुटर यहाँ जोड़ा जा रहा है
             historyContentHtml += `
              <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.8em; color: #999;">
-            <p style="margin: 5px 0;">संचालित: ${APP_NAME}</p>
-            <p style="margin: 5px 0;"><a href="${APP_URL}" target="_blank" style="color: #667eea; text-decoration: none;"> यहाँ क्लिक करें</a></p>
+                <p style="margin: 5px 0;">©YADAV_Sir_AI_Solver_All_History</p>
+                <p style="margin: 5px 0;"><a href="${APP_URL}" target="_blank" style="color: #667eea; text-decoration: none;">किसी भी प्रकार के प्रश्न का 1 मिनट उत्तर पाये Ai से -यहाँ क्लिक करें</a></p>
             </div>
              `;
             tempDiv.innerHTML = historyContentHtml;
