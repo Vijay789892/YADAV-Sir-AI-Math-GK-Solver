@@ -651,6 +651,22 @@
         to { transform: rotate(360deg); }
     }
 
+    /* Ad Banner Styles */
+    .ad-banner {
+        width: 100%;
+        padding: 10px; /* Some padding around the ad */
+        box-sizing: border-box; /* Include padding in width */
+        text-align: center; /* Center the ad if it's smaller than 100% */
+        background: rgba(0, 0, 0, 0.05); /* Slight background to separate it */
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        margin-top: auto; /* Push it to the bottom if container is flex-column */
+        min-height: 120px; /* Give it enough space for the ad (100px + padding) */
+        display: flex; /* Use flex to center iframe if it's smaller */
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Prevent overflow if ad content is too big */
+    }
+
     /* Responsive design */
     @media (max-width: 480px) {
         .container {
@@ -714,6 +730,11 @@
             max-width: 95%;
             padding: 20px;
         }
+
+        .ad-banner {
+            padding: 8px;
+            min-height: 100px; /* Slightly less height on mobile */
+        }
     }
 </style>
 </head>
@@ -725,112 +746,124 @@
             </button>
             <div class="app-title">YADAV Sir AI </div> Math & GK Solver
         </header>
-<main>
-        <textarea id="questionInput" placeholder="गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!"></textarea>
-        
-        <div class="input-options">
-            <div class="action-buttons">
-                <button id="micBtn" title="अपना प्रश्न बोलें">
-                    <i class="fas fa-microphone"></i>
-                </button>
-                <button id="cameraBtn" title="छवि कैप्चर करने के लिए कैमरा खोलें">
-                    <i class="fas fa-camera"></i>
-                </button>
-                <button id="clearInputBtn" title="इनपुट और आउटपुट साफ़ करें">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-                <!-- New Share Result Button -->
-                <button id="shareResultBtn" title="वर्तमान प्रश्न और उत्तर साझा करें">
-                    <i class="fas fa-share-alt"></i>
+        <main>
+            <textarea id="questionInput" placeholder="गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!"></textarea>
+            
+            <div class="input-options">
+                <div class="action-buttons">
+                    <button id="micBtn" title="अपना प्रश्न बोलें">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button id="cameraBtn" title="छवि कैप्चर करने के लिए कैमरा खोलें">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button id="clearInputBtn" title="इनपुट और आउटपुट साफ़ करें">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <!-- New Share Result Button -->
+                    <button id="shareResultBtn" title="वर्तमान प्रश्न और उत्तर साझा करें">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                </div>
+
+                <div class="file-input-wrapper">
+                    <input type="file" id="imageInput" accept="image/*" title="पूछने के लिए एक छवि अपलोड करें">
+                    <i class="fas fa-image"></i>
+                </div>
+            </div>
+            
+            <img id="imagePreview" alt="Image Preview">
+
+            <div id="outputArea">
+                <div id="outputTextContent">
+                    <div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>
+                </div>
+                <button id="speakerBtn" title="उत्तर सुनें">
+                    <i class="fas fa-volume-up"></i>
                 </button>
             </div>
+            
+            <button class="send-btn" id="sendBtn" title="उत्तर प्राप्त करें">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </main>
 
-            <div class="file-input-wrapper">
-                <input type="file" id="imageInput" accept="image/*" title="पूछने के लिए एक छवि अपलोड करें">
-                <i class="fas fa-image"></i>
+       <!-- Ad Banner - Added here -->
+<script type="text/javascript">
+	atOptions = {
+		'key' : 'c9aeceda22757ef64f2eaa16f5041d5c',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/c9aeceda22757ef64f2eaa16f5041d5c/invoke.js"></script>
+
+        <!-- Camera Modal -->
+        <div class="camera-modal" id="cameraModal">
+            <div class="camera-container">
+                <button class="close-camera-btn" id="closeCameraBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <video id="cameraVideo" autoplay playsinline></video>
+                <div class="camera-controls">
+                    <button class="camera-btn" id="switchCameraBtn" title="कैमरा बदलें">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="camera-btn capture-btn" id="captureBtn" title="फोटो खींचिए">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button class="camera-btn" id="flashBtn" title="फ़्लैश टॉगल करें">
+                        <i class="fas fa-bolt"></i>
+                    </button>
+                </div>
             </div>
         </div>
-        
-        <img id="imagePreview" alt="Image Preview">
 
-        <div id="outputArea">
-            <div id="outputTextContent">
-                <div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>
+        <!-- Main Menu Modal -->
+        <div class="main-menu-modal" id="mainMenuModal">
+            <div class="modal-content">
+                <button class="close-btn" id="closeMainMenuBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2>🚀 मेनू</h2>
+                <ul id="mainMenuOptions">
+                    <li><button id="openHistoryBtn"><i class="fas fa-history"></i> उत्तर इतिहास और PDF डाउनलोड  </button></li>
+                 
+                    <li><button id="newGkQuestionBtn"><i class="fas fa-brain"></i> नया सामान्य ज्ञान प्रश्न</button></li>
+                    <li><button id="newMathProblemBtn"><i class="fas fa-calculator"></i> नई गणित समस्या</button></li>
+                    <button class="cta-button" id="cta-menu-btn" onclick="window.open('https://yadavsir.vercel.app/', '_blank')">📝 YADAV Sir AI से Doubt clear करे</button>
+            
+                     <li class="menu-divider"></li>
+                     <li><button id="downloadAppBtn"><i class="fas fa-download"></i> ऐप डाउनलोड करें (PWA)</button></li>
+
+                 <li>
+      <a href="https://yadav-sir-learn-english-app.vercel.app/#" id="newMathProblemBtn" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; border-radius: 5px; text-decoration: none;">
+        <i class="fas fa-calculator"></i> इंग्लिश बोलना सीखें मात्र 30 दिनों में  यहाँ क्लिक करे </a>
+    </li>
+                    <li><button id="shareAppBtn"><i class="fas fa-share-alt"></i> ऐप साझा करें</button></li>
+                  </ul>
             </div>
-            <button id="speakerBtn" title="उत्तर सुनें">
-                <i class="fas fa-volume-up"></i>
-            </button>
         </div>
-        
-        <button class="send-btn" id="sendBtn" title="उत्तर प्राप्त करें">
-            <i class="fas fa-paper-plane"></i>
-        </button>
-    </main>
 
-    <!-- Camera Modal -->
-    <div class="camera-modal" id="cameraModal">
-        <div class="camera-container">
-            <button class="close-camera-btn" id="closeCameraBtn">
-                <i class="fas fa-times"></i>
-            </button>
-            <video id="cameraVideo" autoplay playsinline></video>
-            <div class="camera-controls">
-                <button class="camera-btn" id="switchCameraBtn" title="कैमरा बदलें">
-                    <i class="fas fa-sync-alt"></i>
+        <!-- History Modal -->
+        <div class="history-modal" id="historyModal">
+            <div class="modal-content">
+                <button class="close-btn" id="closeHistoryBtn">
+                    <i class="fas fa-times"></i>
                 </button>
-                <button class="camera-btn capture-btn" id="captureBtn" title="फोटो खींचिए">
-                    <i class="fas fa-camera"></i>
+                <h2>📚 उत्तर इतिहास</h2>
+                <!-- New PDF Download Button -->
+                <button id="downloadHistoryPdfBtn" title="पूरा इतिहास PDF के रूप में डाउनलोड करें">
+                    <i class="fas fa-file-pdf"></i> सभी इतिहास PDF डाउनलोड करें
                 </button>
-                <button class="camera-btn" id="flashBtn" title="फ़्लैश टॉगल करें">
-                    <i class="fas fa-bolt"></i>
-                </button>
+                <ul id="historyList">
+                    <!-- History items will be inserted here by JavaScript -->
+                </ul>
             </div>
         </div>
     </div>
-
-    <!-- Main Menu Modal -->
-    <div class="main-menu-modal" id="mainMenuModal">
-        <div class="modal-content">
-            <button class="close-btn" id="closeMainMenuBtn">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2>🚀 मेनू</h2>
-            <ul id="mainMenuOptions">
-                <li><button id="openHistoryBtn"><i class="fas fa-history"></i> उत्तर इतिहास और PDF डाउनलोड  </button></li>
-             
-                <li><button id="newGkQuestionBtn"><i class="fas fa-brain"></i> नया सामान्य ज्ञान प्रश्न</button></li>
-                <li><button id="newMathProblemBtn"><i class="fas fa-calculator"></i> नई गणित समस्या</button></li>
-                <button class="cta-button" id="cta-menu-btn" onclick="window.open('https://yadavsir.vercel.app/', '_blank')">📝 YADAV Sir AI से Doubt clear करे</button>
-        
-                 <li class="menu-divider"></li>
-                 <li><button id="downloadAppBtn"><i class="fas fa-download"></i> ऐप डाउनलोड करें (PWA)</button></li>
-
-             <li>
-  <a href="https://yadav-sir-learn-english-app.vercel.app/#" id="newMathProblemBtn" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; border-radius: 5px; text-decoration: none;">
-    <i class="fas fa-calculator"></i> इंग्लिश बोलना सीखें मात्र 30 दिनों में  यहाँ क्लिक करे </a>
-</li>
-                <li><button id="shareAppBtn"><i class="fas fa-share-alt"></i> ऐप साझा करें</button></li>
-              </ul>
-        </div>
-    </div>
-
-    <!-- History Modal -->
-    <div class="history-modal" id="historyModal">
-        <div class="modal-content">
-            <button class="close-btn" id="closeHistoryBtn">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2>📚 उत्तर इतिहास</h2>
-            <!-- New PDF Download Button -->
-            <button id="downloadHistoryPdfBtn" title="पूरा इतिहास PDF के रूप में डाउनलोड करें">
-                <i class="fas fa-file-pdf"></i> सभी इतिहास PDF डाउनलोड करें
-            </button>
-            <ul id="historyList">
-                <!-- History items will be inserted here by JavaScript -->
-            </ul>
-        </div>
-    </div>
-</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
