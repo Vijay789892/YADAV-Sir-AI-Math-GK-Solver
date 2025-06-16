@@ -19,7 +19,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        overflow: hidden; /* Prevent body scroll, container manages 100vh */
+        overflow: hidden;
     }
 
     .container {
@@ -187,6 +187,8 @@
         flex-grow: 1;
         overflow-y: auto;
         padding-bottom: 50px;
+        /* Dynamic font size will be applied here */
+        font-size: var(--output-font-size, 1.1em); 
     }
     
     #outputPlaceholder {
@@ -201,7 +203,7 @@
     }
 
     /* Main Speaker Button Styles */
-    #speakerBtn {
+    #speakerBtn, #favoriteOutputBtn { /* Added #favoriteOutputBtn */
         position: absolute;
         bottom: 15px;
         right: 15px;
@@ -210,7 +212,7 @@
         border-radius: 50%;
         width: 45px;
         height: 45px;
-        display: none;
+        display: none; /* Controlled by JS */
         justify-content: center;
         align-items: center;
         font-size: 1.2em;
@@ -221,7 +223,7 @@
         z-index: 5;
     }
 
-    #speakerBtn:hover {
+    #speakerBtn:hover, #favoriteOutputBtn:hover {
         transform: translateY(-2px) scale(1.05);
         box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
     }
@@ -230,7 +232,15 @@
         background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
     }
 
-    /* History List Speaker Button Styles */
+    #favoriteOutputBtn {
+        right: 70px; /* Position next to speaker button */
+        background: linear-gradient(135deg, #f06292 0%, #e91e63 100%); /* Pink/Red for favorite */
+    }
+    #favoriteOutputBtn.favorited {
+        background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%); /* Gold/Orange when favorited */
+    }
+
+    /* History & Favorites List Speaker Button Styles */
     .history-speaker-btn {
         background: rgba(102, 126, 234, 0.2);
         border: none;
@@ -292,7 +302,7 @@
         transform: none;
     }
 
-    /* Individual PDF download button in history list */
+    /* Individual PDF download button in history list / favorites list */
     .single-pdf-btn {
         background: rgba(243, 156, 18, 0.2); /* Lighter orange */
         border: none;
@@ -458,8 +468,8 @@
         transform: scale(1.1);
     }
 
-    /* History Modal Styles */
-    .history-modal {
+    /* Common Modal Styles */
+    .history-modal, .main-menu-modal, .settings-modal, .favorites-modal { /* Added .favorites-modal */
         position: fixed;
         top: 0;
         left: 0;
@@ -476,30 +486,7 @@
         backdrop-filter: blur(5px);
     }
 
-    .history-modal.show {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    /* Main Menu Modal Styles (similar to history-modal) */
-    .main-menu-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 100;
-        visibility: hidden;
-        opacity: 0;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(5px);
-    }
-
-    .main-menu-modal.show {
+    .history-modal.show, .main-menu-modal.show, .settings-modal.show, .favorites-modal.show { /* Added .favorites-modal */
         visibility: visible;
         opacity: 1;
     }
@@ -551,13 +538,13 @@
         transform: scale(1.1);
     }
 
-    #historyList, #mainMenuOptions {
+    #historyList, #mainMenuOptions, #favoritesList { /* Added #favoritesList */
         list-style: none;
         padding: 0;
         margin: 0;
     }
 
-    #historyList li {
+    #historyList li, #favoritesList li { /* Added #favoritesList li */
         background: rgba(102, 126, 234, 0.1);
         padding: 15px;
         margin-bottom: 15px;
@@ -571,16 +558,16 @@
         position: relative;
     }
 
-    #historyList li:hover {
+    #historyList li:hover, #favoritesList li:hover { /* Added #favoritesList li */
         background: rgba(102, 126, 234, 0.15);
         transform: translateX(5px);
     }
 
-    #historyList li strong {
+    #historyList li strong, #favoritesList li strong { /* Added #favoritesList li */
         color: #667eea;
     }
 
-    #historyList li .answer-content {
+    #historyList li .answer-content, #favoritesList li .answer-content { /* Added #favoritesList li */
         display: flex;
         align-items: center;
         margin-top: 8px;
@@ -588,11 +575,11 @@
         word-break: break-word;
     }
 
-    #historyList li .answer-text-wrapper {
+    #historyList li .answer-text-wrapper, #favoritesList li .answer-text-wrapper { /* Added #favoritesList li */
         flex-grow: 1;
     }
 
-    #historyList li small {
+    #historyList li small, #favoritesList li small { /* Added #favoritesList li */
         display: block;
         margin-top: 8px;
         color: #999;
@@ -604,7 +591,7 @@
         margin-bottom: 10px;
     }
 
-    #mainMenuOptions button {
+    #mainMenuOptions button, .settings-option button { /* Added settings-option button */
         width: 100%;
         padding: 15px;
         border: none;
@@ -620,13 +607,13 @@
         gap: 15px;
     }
 
-    #mainMenuOptions button:hover {
+    #mainMenuOptions button:hover, .settings-option button:hover { /* Added settings-option button */
         background: rgba(102, 126, 234, 0.2);
         transform: translateY(-2px);
         box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
     }
 
-    #mainMenuOptions button i {
+    #mainMenuOptions button i, .settings-option i { /* Added settings-option i */
         font-size: 1.3em;
         color: #764ba2;
     }
@@ -636,6 +623,98 @@
         background-color: rgba(0,0,0,0.1);
         margin: 20px 0;
     }
+
+    /* Settings Modal Specific Styles */
+    .settings-option {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 10px;
+        background: rgba(102, 126, 234, 0.05);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .settings-option label {
+        display: block;
+        font-weight: 600;
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+    }
+
+    .settings-option select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 1em;
+        background-color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .settings-option select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        outline: none;
+    }
+
+    .settings-option .text-size-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .settings-option .text-size-options label {
+        background: rgba(102, 126, 234, 0.1);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: normal;
+        margin-bottom: 0; /* Override default label margin */
+        flex-grow: 1;
+        text-align: center;
+        min-width: 40px; /* Ensure buttons don't get too small */
+    }
+
+    .settings-option .text-size-options input[type="radio"] {
+        display: none;
+    }
+
+    .settings-option .text-size-options input[type="radio"]:checked + label {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #764ba2;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .settings-option .text-size-options label:hover {
+        background: rgba(102, 126, 234, 0.2);
+    }
+
+    #removeAdsBtn {
+        background: linear-gradient(135deg, #28a745 0%, #218838 100%); /* Green for 'No Ads' */
+        color: white;
+        margin-top: 15px;
+        font-size: 1.1em;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    }
+    #removeAdsBtn:hover {
+        background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+    }
+    #removeAdsBtn:disabled {
+        background: #a7a7a7;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+
 
     /* Loading animation */
     .loading {
@@ -691,6 +770,14 @@
             height: 40px;
             font-size: 1.1em;
         }
+        #favoriteOutputBtn { /* Position for mobile */
+            bottom: 10px;
+            right: 60px; /* Adjust based on speakerBtn size */
+            width: 40px;
+            height: 40px;
+            font-size: 1.1em;
+        }
+
 
         .history-speaker-btn, .single-pdf-btn { /* Apply to both new buttons */
             width: 28px;
@@ -741,19 +828,15 @@
 </head>
 <body>
 
-
-
     <div class="container">
         <header>
             <button class="menu-btn" id="menuBtn">
                 <i class="fas fa-bars"></i>
             </button>
-            <div class="app-title">YADAV Sir AI </div> Math & GK Solver
+            <div class="app-title">YADAV Sir AI  </div> Math & GK Solver
         </header>
         <main>
-
-
-      <textarea id="questionInput" placeholder="गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!"></textarea>
+            <textarea id="questionInput" placeholder="गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें!"></textarea>
             
             <div class="input-options">
                 <div class="action-buttons">
@@ -766,7 +849,6 @@
                     <button id="clearInputBtn" title="इनपुट और आउटपुट साफ़ करें">
                         <i class="fas fa-trash-alt"></i>
                     </button>
-                    <!-- New Share Result Button -->
                     <button id="shareResultBtn" title="वर्तमान प्रश्न और उत्तर साझा करें">
                         <i class="fas fa-share-alt"></i>
                     </button>
@@ -787,16 +869,19 @@
                 <button id="speakerBtn" title="उत्तर सुनें">
                     <i class="fas fa-volume-up"></i>
                 </button>
+                <!-- New Favorite Button in Output Area -->
+                <button id="favoriteOutputBtn" title="उत्तर को पसंदीदा में जोड़ें">
+                    <i class="fas fa-heart"></i>
+                </button>
             </div>
             
-
             <button class="send-btn" id="sendBtn" title="उत्तर प्राप्त करें">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </main>
 
-
-<script type="text/javascript">
+        <!-- Ad Banner container -->
+     <script type="text/javascript">
 	atOptions = {
 		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
 		'format' : 'iframe',
@@ -806,11 +891,7 @@
 	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
-
-
-
-
-<script type="text/javascript">
+        <script type="text/javascript">
 	atOptions = {
 		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
 		'format' : 'iframe',
@@ -820,7 +901,7 @@
 	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
-
+        <!-- End Ad Banner container -->
 
         <!-- Camera Modal -->
         <div class="camera-modal" id="cameraModal">
@@ -851,166 +932,183 @@
                 </button>
                 <h2>🚀 मेनू</h2>
 
-
-
-
-
-<script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
+             <script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
 
                 <ul id="mainMenuOptions">
+
+                     <li><button id="settingsBtn"><i class="fas fa-gear"></i> सेटिंग्स ( भाषा चुने ) </button></li>
+      
+                    <!-- New Favorites Button -->
                     <li><button id="openHistoryBtn"><i class="fas fa-history"></i> उत्तर इतिहास और PDF डाउनलोड  </button></li>
+                    <li><button id="openFavoritesBtn"><i class="fas fa-heart"></i> पसंदीदा PDF </button></li>
+
+           
                  
                     <li><button id="newGkQuestionBtn"><i class="fas fa-brain"></i> नया सामान्य ज्ञान प्रश्न</button></li>
                     <li><button id="newMathProblemBtn"><i class="fas fa-calculator"></i> नई गणित समस्या</button></li>
 
-
-                    <button class="cta-button" id="cta-menu-btn" onclick="window.open('https://yadavsir.vercel.app/', '_blank')">📝 YADAV Sir AI से Doubt clear करे</button>
+                    <li><button class="cta-button" id="cta-menu-btn" onclick="window.open('https://yadavsir.vercel.app/', '_blank')">📝 YADAV Sir AI से Doubt clear करे</button></li>
             
-                     <li class="menu-divider"></li>
+                    <li class="menu-divider"></li>
 
-
-
-<script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
+                  <script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
 
+                    <li><button id="downloadAppBtn"><i class="fas fa-download"></i> ऐप डाउनलोड करें (PWA)</button></li>
 
-
-
-
-                     <li><button id="downloadAppBtn"><i class="fas fa-download"></i> ऐप डाउनलोड करें (PWA)</button></li>
-
-                 <li>
-      <a href="https://yadav-sir-learn-english-app.vercel.app/#" id="newMathProblemBtn" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; border-radius: 5px; text-decoration: none;">
-        <i class="fas fa-calculator"></i> इंग्लिश बोलना सीखें मात्र 30 दिनों में  यहाँ क्लिक करे </a>
-    </li>
+                    <li>
+                        <a href="https://yadav-sir-learn-english-app.vercel.app/#" id="learnEnglishBtn" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; border-radius: 5px; text-decoration: none;">
+                            <i class="fas fa-book"></i> इंग्लिश बोलना सीखें मात्र 30 दिनों में  यहाँ क्लिक करे </a>
+                    </li>
+                     <li><button id="rateAppBtn"><i class="fas fa-thumbs-up"></i> इस ऐप को रेट करें</button></li>
+                              
+                    <li><button id="privacyPolicyBtn"><i class="fas fa-shield-alt"></i> गोपनीयता नीति</button></li>
                     <li><button id="shareAppBtn"><i class="fas fa-share-alt"></i> ऐप साझा करें</button></li>
 
+                    <div class="ad-banner">
+                        <script async="async" data-cfasync="false" src="//pl26909564.profitableratecpm.com/6ebb90926991ce60974cf8782c909bec/invoke.js"></script>
+                        <div id="container-6ebb90926991ce60974cf8782c909bec"></div>
+                    </div>
+                    <div class="ad-banner">
+                        <script type='text/javascript' src='//pl26909800.profitableratecpm.com/26/e9/1e/26e91e385714762f7162473ebb055f5f.js'></script>
+                    </div>
+                    <div class="ad-banner">
 <script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
+	atOptions = {
+		'key' : 'fc25a66bbc733547fe693d84367c513e',
+		'format' : 'iframe',
+		'height' : 250,
+		'width' : 300,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/fc25a66bbc733547fe693d84367c513e/invoke.js"></script>
+
+
+  <div class="ad-banner">
+<script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
 
 
+ </div>   
+ <div class="ad-banner">
+
+
+
+  <script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script> 
+
+
+ </div>
+  
 <script async="async" data-cfasync="false" src="//pl26909564.profitableratecpm.com/6ebb90926991ce60974cf8782c909bec/invoke.js"></script>
 <div id="container-6ebb90926991ce60974cf8782c909bec"></div>
 
-
-
 <script type='text/javascript' src='//pl26909800.profitableratecpm.com/26/e9/1e/26e91e385714762f7162473ebb055f5f.js'></script>
 
+  <div class="ad-banner">
 
+  <script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
+
+  </div>
 <script type="text/javascript">
-    atOptions = {
-        'key' : 'fc25a66bbc733547fe693d84367c513e',
-        'format' : 'iframe',
-        'height' : 250,
-        'width' : 300,
-        'params' : {}
-    };
+	atOptions = {
+		'key' : 'fc25a66bbc733547fe693d84367c513e',
+		'format' : 'iframe',
+		'height' : 250,
+		'width' : 300,
+		'params' : {}
+	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/fc25a66bbc733547fe693d84367c513e/invoke.js"></script>
 
 
 
+  <div class="ad-banner">
+
+
+  <script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>    </div>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Favorites Modal (New Feature) -->
+        <div class="favorites-modal" id="favoritesModal">
+            <div class="modal-content">
+                <button class="close-btn" id="closeFavoritesBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2>❤️ पसंदीदा</h2>
 
 
 
-<script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
+   <script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
 
 
 
-
-
-<script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
-
-
-
-
-
-
-<script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
-
-
-
-
-<script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
-
-
-
-
-<script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
-
-
-
-                  </ul>
+                <ul id="favoritesList">
+                    <!-- Favorites items will be inserted here by JavaScript -->
+                </ul>
             </div>
         </div>
 
@@ -1021,6 +1119,54 @@
                     <i class="fas fa-times"></i>
                 </button>
                 <h2>📚 उत्तर इतिहास</h2>
+
+ <script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
+
+
+
+
+
+   <script type="text/javascript">
+	atOptions = {
+		'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
+
+
+
+
+
+                <button id="downloadHistoryPdfBtn" title="पूरा इतिहास PDF के रूप में डाउनलोड करें">
+                    <i class="fas fa-file-pdf"></i> सभी इतिहास PDF डाउनलोड करें
+                </button>
+
+                <ul id="historyList">
+                    <!-- History items will be inserted here by JavaScript -->
+                </ul>         
+            </div>     
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="settings-modal" id="settingsModal">
+            <div class="modal-content">
+                <button class="close-btn" id="closeSettingsBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2>⚙️ सेटिंग्स</h2>
 
 <script type="text/javascript">
 	atOptions = {
@@ -1033,30 +1179,68 @@
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
 
-<script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
 
+                
+                <div class="settings-option">
+                    <label for="languageSelect">भाषा चुनें:</label>
+                    <select id="languageSelect">
+                        <option value="auto">स्वचालित (Auto-detect)</option>
+                        <option value="hi">🇮🇳हिंदी (Hindi)</option>
+                        <option value="en">🇺🇸अंग्रेजी (English)</option>
+                <option value="es">🇪🇸 स्पेनिश (Spanish)</option>
+                <option value="fr">🇫🇷 फ्रेंच (French)</option>
+                <option value="de">🇩🇪 जर्मन (German)</option>
+                <option value="ja">🇯🇵 जापानी (Japanese)</option>
+                <option value="ko">🇰🇷 कोरियाई (Korean)</option>
+                <option value="zh">🇨🇳 चीनी (Chinese)</option>
+                <option value="ar">🇸🇦 अरबी (Arabic)</option>
+                <option value="ru">🇷🇺 रूसी (Russian)</option>
+                <option value="pt">🇧🇷 पुर्तगाली (Portuguese)</option>
+                <option value="it">🇮🇹 इतालवी (Italian)</option>
+                <option value="nl">🇳🇱 डच (Dutch)</option>
+                <option value="sv">🇸🇪 स्वीडिश (Swedish)</option>
+                <option value="da">🇩🇰 डेनिश (Danish)</option>
+                <option value="no">🇳🇴 नॉर्वेजियन (Norwegian)</option>
+                <option value="fi">🇫🇮 फिनिश (Finnish)</option>
+                <option value="pl">🇵🇱 पोलिश (Polish)</option>
+                <option value="tr">🇹🇷 तुर्की (Turkish)</option>
+                <option value="th">🇹🇭 थाई (Thai)</option>
+                <option value="vi">🇻🇳 वियतनामी (Vietnamese)</option>
+                <option value="id">🇮🇩 इंडोनेशियाई (Indonesian)</option>
+                <option value="ms">🇲🇾 मलय (Malay)</option>
+                <option value="tl">🇵🇭 फिलिपिनो (Filipino)</option>
+                <option value="bn">🇧🇩 बंगाली (Bengali)</option>
+                <option value="ur">🇵🇰 उर्दू (Urdu)</option>
+                <option value="ta">🇮🇳 तमिल (Tamil)</option>
+                <option value="te">🇮🇳 तेलुगु (Telugu)</option>
+                <option value="mr">🇮🇳 मराठी (Marathi)</option>
+                <option value="gu">🇮🇳 गुजराती (Gujarati)</option>
+                <option value="kn">🇮🇳 कन्नड़ (Kannada)</option>
+                <option value="ml">🇮🇳 मलयालम (Malayalam)</option>
+                <option value="pa">🇮🇳 पंजाबी (Punjabi)</option>
+                <option value="or">🇮🇳 ओड़िया (Odia)</option>
+                <option value="as">🇮🇳 असमिया (Assamese)</option>
+                    </select>
+                </div>
 
-          
-          <!-- New PDF Download Button -->
-                <button id="downloadHistoryPdfBtn" title="पूरा इतिहास PDF के रूप में डाउनलोड करें">
-                    <i class="fas fa-file-pdf"></i> सभी इतिहास PDF डाउनलोड करें
-                </button>
-                <ul id="historyList">
-                    <!-- History items will be inserted here by JavaScript -->
-                </ul>         
+                <div class="settings-option">
+                    <label>उत्तर टेक्स्ट का आकार:</label>
+                    <div class="text-size-options" id="textSizeOptions">
+                        <input type="radio" id="textSizeSmall" name="textSize" value="14px">
+                        <label for="textSizeSmall">छोटा</label>
+                        <input type="radio" id="textSizeMedium" name="textSize" value="16px" checked>
+                        <label for="textSizeMedium">मध्यम</label>
+                        <input type="radio" id="textSizeLarge" name="textSize" value="18px">
+                        <label for="textSizeLarge">बड़ा</label>
+                    </div>
+                </div>
+             
+                <div class="settings-option">
+                    <button id="removeAdsBtn"><i class="fas fa-ban"></i> विज्ञापन-मुक्त अनुभव प्राप्त करें </button>
+                </div>
 
-            </div>     
-
-         </div>
+            </div>
+        </div>
     </div>
 
 <script>
@@ -1078,7 +1262,7 @@
         const historyModal = document.getElementById('historyModal');
         const historyList = document.getElementById('historyList');
         const closeHistoryBtn = document.getElementById('closeHistoryBtn');
-        const downloadHistoryPdfBtn = document.getElementById('downloadHistoryPdfBtn'); // New PDF button
+        const downloadHistoryPdfBtn = document.getElementById('downloadHistoryPdfBtn'); 
 
         // Main Menu elements
         const mainMenuModal = document.getElementById('mainMenuModal');
@@ -1088,6 +1272,21 @@
         const shareAppBtn = document.getElementById('shareAppBtn');
         const newGkQuestionBtn = document.getElementById('newGkQuestionBtn');
         const newMathProblemBtn = document.getElementById('newMathProblemBtn');
+        
+        // New Menu Options
+        const rateAppBtn = document.getElementById('rateAppBtn');
+        const privacyPolicyBtn = document.getElementById('privacyPolicyBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const learnEnglishBtn = document.getElementById('learnEnglishBtn');
+
+        // Settings Modal elements
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const languageSelect = document.getElementById('languageSelect');
+        const textSizeOptions = document.getElementById('textSizeOptions'); // Now correctly referencing the div
+        const removeAdsBtn = document.getElementById('removeAdsBtn');
+        const adContainer = document.getElementById('adContainer'); // Main ad container
+        const allAdDivs = document.querySelectorAll('.ad-banner'); // All ad containers (main + menu/history modals)
 
         // Camera elements
         const cameraModal = document.getElementById('cameraModal');
@@ -1104,7 +1303,14 @@
         const speakerBtn = document.getElementById('speakerBtn');
         let currentUtterance = null;
         let isSpeaking = false;
-        let hindiVoice = null;
+        let selectedTTSVoice = null; 
+
+        // Favorites elements
+        const favoritesModal = document.getElementById('favoritesModal');
+        const favoritesList = document.getElementById('favoritesList');
+        const closeFavoritesBtn = document.getElementById('closeFavoritesBtn');
+        const openFavoritesBtn = document.getElementById('openFavoritesBtn'); // The button in the main menu
+        const favoriteOutputBtn = document.getElementById('favoriteOutputBtn'); // New: Button in output area
 
         // API Configuration
         const GEMINI_API_KEY = 'AIzaSyDHy9J04dI8LdK1ijNJMrRXubJ5ucx9rdk'; // Keep your API key private in a real app
@@ -1112,6 +1318,21 @@
         // Variables for image data, history, and camera
         let uploadedImageData = null;
         let history = []; // This will be loaded from localStorage
+        let favorites = []; // New array for favorites
+
+        // Store the last answered question and answer for easy favoriting
+        let lastAnsweredQuestion = null;
+        let lastAnsweredText = null;
+        let lastAnsweredImageUsed = false;
+
+
+        // Settings variables with defaults
+        let appSettings = {
+            language: 'auto', // 'auto', 'hi', 'en'
+            textSize: '16px', // '12px', '16px', '20px', etc.
+            isAdFree: false // boolean
+        };
+        
         let currentStream = null;
         let currentFacingMode = 'environment';
         let flashEnabled = false;
@@ -1125,18 +1346,68 @@
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
             recognition.interimResults = false;
-            recognition.lang = 'hi-IN'; // Set default language to Hindi for better recognition
+            recognition.lang = 'hi-IN'; // Default language for speech input
             recognition.continuous = false;
         } else {
             micBtn.disabled = true;
             micBtn.title = "आपके ब्राउज़र में भाषण पहचान समर्थित नहीं है";
         }
 
+        // --- Settings Management Functions ---
+        const saveSettings = () => {
+            try {
+                localStorage.setItem('aiSolverSettings', JSON.stringify(appSettings));
+                console.log('सेटिंग्स localStorage में सहेजी गईं।');
+            } catch (e) {
+                console.error('सेटिंग्स को localStorage में सहेजने में त्रुटि हुई:', e);
+            }
+        };
+
+        const loadSettings = () => {
+            try {
+                const storedSettings = localStorage.getItem('aiSolverSettings');
+                if (storedSettings) {
+                    appSettings = { ...appSettings, ...JSON.parse(storedSettings) };
+                    console.log('सेटिंग्स localStorage से लोड की गईं:', appSettings);
+                }
+            } catch (e) {
+                console.error('सेटिंग्स को localStorage से लोड करने में त्रुटि हुई:', e);
+            }
+            applySettings();
+        };
+
+        const applySettings = () => {
+            // Apply Language setting
+            languageSelect.value = appSettings.language;
+            loadVoices(); // Reload voices based on selected language
+
+            // Apply Text Size setting
+            outputTextContent.style.fontSize = appSettings.textSize;
+            questionInput.style.fontSize = appSettings.textSize; // Apply to input as well
+            const selectedSizeRadio = textSizeOptions.querySelector(`input[value="${appSettings.textSize}"]`);
+            if (selectedSizeRadio) {
+                selectedSizeRadio.checked = true;
+            }
+
+            // Apply Ad-Free setting
+            if (appSettings.isAdFree) {
+                allAdDivs.forEach(adDiv => adDiv.style.display = 'none');
+                removeAdsBtn.disabled = true;
+                removeAdsBtn.innerHTML = '<i class="fas fa-check-circle"></i> विज्ञापन-मुक्त';
+                removeAdsBtn.title = 'आप पहले से ही विज्ञापन-मुक्त अनुभव का आनंद ले रहे हैं!';
+            } else {
+                allAdDivs.forEach(adDiv => adDiv.style.display = 'flex'); // Ensure ads are visible if not ad-free
+                removeAdsBtn.disabled = false;
+                removeAdsBtn.innerHTML = '<i class="fas fa-ban"></i> विज्ञापन-मुक्त अनुभव प्राप्त करें (₹49)';
+                removeAdsBtn.title = 'विज्ञापन हटाने के लिए ₹49 का भुगतान करें';
+            }
+        };
+
         // --- History Persistence Functions ---
         const saveHistory = () => {
             try {
                 localStorage.setItem('aiSolverHistory', JSON.stringify(history));
-                console.log('History saved to localStorage.');
+                console.log('इतिहास localStorage में सहेजा गया।');
             } catch (e) {
                 console.error('इतिहास को localStorage में सहेजने में त्रुटि हुई:', e);
                 alert('इतिहास सहेजने में त्रुटि हुई। शायद स्टोरेज भरा हुआ है।');
@@ -1148,13 +1419,71 @@
                 const storedHistory = localStorage.getItem('aiSolverHistory');
                 if (storedHistory) {
                     history = JSON.parse(storedHistory);
-                    console.log('History loaded from localStorage.');
+                    console.log('इतिहास localStorage से लोड हुआ।');
                 }
             } catch (e) {
                 console.error('इतिहास को localStorage से लोड करने में त्रुटि हुई:', e);
                 history = []; // Reset history if loading fails
             }
         };
+
+        // --- Favorites Persistence Functions (New) ---
+        const saveFavorites = () => {
+            try {
+                localStorage.setItem('aiSolverFavorites', JSON.stringify(favorites));
+                console.log('पसंदीदा localStorage में सहेजा गया।');
+            } catch (e) {
+                console.error('पसंदीदा को localStorage में सहेजने में त्रुटि हुई:', e);
+                alert('पसंदीदा सहेजने में त्रुटि हुई।');
+            }
+        };
+
+        const loadFavorites = () => {
+            try {
+                const storedFavorites = localStorage.getItem('aiSolverFavorites');
+                if (storedFavorites) {
+                    favorites = JSON.parse(storedFavorites);
+                    console.log('पसंदीदा localStorage से लोड हुआ।');
+                }
+            } catch (e) {
+                console.error('पसंदीदा को localStorage से लोड करने में त्रुटि हुई:', e);
+                favorites = []; // Reset if loading fails
+            }
+        };
+
+        const isFavorited = (entry) => {
+            return favorites.some(fav => 
+                fav.question === entry.question && 
+                fav.answer === entry.answer &&
+                fav.imageUsed === entry.imageUsed
+                // We're not checking timestamp here because the content is what matters for "favorited" state
+            );
+        };
+
+        const addToFavorites = (entry) => {
+            // Check for duplicates based on question, answer, and imageUsed status
+            if (!isFavorited(entry)) {
+                favorites.unshift(entry); // Add to the beginning
+                saveFavorites();
+                return true; // Successfully added
+            }
+            return false; // Already exists
+        };
+
+        const removeFromFavorites = (entryToRemove) => {
+            const initialLength = favorites.length;
+            favorites = favorites.filter(fav => 
+                !(fav.question === entryToRemove.question && 
+                  fav.answer === entryToRemove.answer &&
+                  fav.timestamp === entryToRemove.timestamp) // Match by timestamp too for exact removal
+            );
+            if (favorites.length < initialLength) {
+                saveFavorites();
+                return true;
+            }
+            return false;
+        };
+
 
         // --- Helper Functions ---
 
@@ -1271,21 +1600,27 @@
         // --- Speech Synthesis Functions ---
         const loadVoices = () => {
             const voices = window.speechSynthesis.getVoices();
-            // Try to find a Hindi voice first
-            hindiVoice = voices.find(voice => voice.lang === 'hi-IN' || voice.name.includes('Hindi'));
-            if (!hindiVoice) {
-                console.warn("हिंदी आवाज (hi-IN) नहीं मिली। अंग्रेजी आवाज पर वापस आ रहा है।");
-                // Fallback to a suitable English voice if Hindi is not available
-                hindiVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
+            const preferredLang = appSettings.language === 'auto' ? navigator.language || 'en-US' : appSettings.language;
+            
+            // Try to find a voice matching the selected language
+            selectedTTSVoice = voices.find(voice => voice.lang.startsWith(preferredLang) || voice.name.includes(preferredLang.split('-')[0]));
+            
+            if (!selectedTTSVoice && preferredLang !== 'hi') { // Fallback to Hindi if not found and user didn't explicitly select Hindi
+                selectedTTSVoice = voices.find(voice => voice.lang.startsWith('hi') || voice.name.includes('Hindi'));
             }
-            if (!hindiVoice) {
+            if (!selectedTTSVoice) { // Fallback to English if Hindi not found
+                selectedTTSVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
+            }
+
+            if (!selectedTTSVoice) {
                 console.error("कोई आवाज नहीं मिली। टेक्स्ट-टू-स्पीच काम नहीं कर सकता है।");
                 speakerBtn.style.display = 'none';
-                // Update visibility of existing history speaker buttons
+                favoriteOutputBtn.style.display = 'none'; // Also hide favorite button if no TTS (implies no answer yet)
                 document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
             } else {
-                // If voices are loaded, ensure history speaker buttons are visible
-                document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'inline-flex');
+                console.log(`TTS voice selected: ${selectedTTSVoice.name} (${selectedTTSVoice.lang})`);
+                // speakerBtn.style.display = 'flex'; // Show main speaker button if TTS is available (handled in sendBtn)
+                document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'inline-flex'); 
             }
         };
 
@@ -1295,11 +1630,12 @@
         } else {
             console.warn("यह ब्राउज़र स्पीच सिंथेसिस API का समर्थन नहीं करता है।");
             speakerBtn.style.display = 'none';
+            favoriteOutputBtn.style.display = 'none';
             document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
         }
 
         const speakAnswer = (text, targetButton) => {
-            if (!('speechSynthesis' in window) || !hindiVoice) {
+            if (!('speechSynthesis' in window) || !selectedTTSVoice) {
                 console.error('भाषण संश्लेषण तैयार नहीं है (API समर्थित नहीं है या कोई आवाज लोड नहीं हुई है)।');
                 alert('क्षमा करें, आपका ब्राउज़र पाठ से वाक् का समर्थन नहीं करता है या आवाज़ें लोड नहीं हुई हैं।');
                 return;
@@ -1308,8 +1644,8 @@
             stopSpeaking(); // Stop any ongoing speech and reset ALL speaker buttons
 
             currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.voice = hindiVoice;
-            currentUtterance.lang = hindiVoice.lang;
+            currentUtterance.voice = selectedTTSVoice;
+            currentUtterance.lang = selectedTTSVoice.lang;
             currentUtterance.rate = 1;
             currentUtterance.pitch = 1;
 
@@ -1355,7 +1691,9 @@
                 btn.classList.remove('playing');
                 btn.title = 'उत्तर सुनें';
             });
-            console.log('बोलना बंद किया गया।');
+            // Also reset favoriteOutputBtn if it's currently showing filled heart
+            favoriteOutputBtn.classList.remove('favorited');
+            favoriteOutputBtn.innerHTML = '<i class="fas fa-heart"></i>';
         };
 
 
@@ -1364,22 +1702,28 @@
 
             let modelName = 'gemini-1.5-flash-latest'; // Using a more recent model
             const parts = [];
+            let promptText = text.trim();
 
-            if (text.trim()) {
-                let prompt = text.trim();
+            // Add language instruction to the prompt
+            if (appSettings.language && appSettings.language !== 'auto') {
+                const langMap = { 'hi': 'Hindi', 'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'ja': 'Japanese', 'ko': 'Korean', 'zh': 'Chinese', 'ar': 'Arabic', 'ru': 'Russian', 'pt': 'Portuguese', 'it': 'Italian', 'nl': 'Dutch', 'sv': 'Swedish', 'da': 'Danish', 'no': 'Norwegian', 'fi': 'Finnish', 'pl': 'Polish', 'tr': 'Turkish', 'th': 'Thai', 'vi': 'Vientamese', 'id': 'Indonesian', 'ms': 'Malay', 'tl': 'Filipino', 'bn': 'Bengali', 'ur': 'Urdu', 'ta': 'Tamil', 'te': 'Telugu', 'mr': 'Marathi', 'gu': 'Gujarati', 'kn': 'Kannada', 'ml': 'Malayalam', 'pa': 'Punjabi', 'or': 'Odia', 'as': 'Assamese' };
+                promptText = `Respond strictly in ${langMap[appSettings.language]}: ${promptText}`;
+            }
+
+            if (promptText) {
                 if (imageData) {
-                    prompt = `Analyze this image and answer: ${prompt}. Provide a clear, detailed response. If it's a math problem in the image, solve it step by step. If it's GK, provide factual information.`;
+                    promptText = `Analyze this image and answer: ${promptText}. Provide a clear, detailed response. If it's a math problem in the image, solve it step by step. If it's GK, provide factual information.`;
                 } else {
-                    const lowerCasePrompt = prompt.toLowerCase();
-                    if (lowerCasePrompt.match(/(\d+\s*[\+\-\*\/xX÷]\s*\d+)|(solve)|(calculate)|(what is the result of)|(evaluate)|(integral)|(derivative)|(equation)|(find x)|(simplify)/i)) {
-                        prompt = `Solve this math problem step by step with clear explanations: ${prompt}`;
-                    } else if (lowerCasePrompt.match(/(who is)|(what is)|(tell me about)|(define)|(fact)|(describe)|(explain)|(history of)|(when did)|(where is)|(what are)|(list)|(quiz)|(gk)|(general knowledge)|(बताओ)|(क्या है)|(कौन है)|(कब)|(कहां)/i)) {
-                        prompt = `Answer this general knowledge question with accurate, informative details: ${prompt}`;
+                    const lowerCasePrompt = promptText.toLowerCase();
+                    if (lowerCasePrompt.match(/(\d+\s*[\+\-\*\/xX÷]\s*\d+)|(solve)|(calculate)|(what is the result of)|(evaluate)|(integral)|(derivative)|(equation)|(find x)|(simplify)/i) || (appSettings.language === 'hi' && lowerCasePrompt.match(/(हल करो)|(गणना करो)|(निकालो)|(समीकरण)|(गणित)|(जोड़)|(घटाना)|(गुणा)|(भाग)/i))) {
+                        promptText = `Solve this math problem step by step with clear explanations: ${promptText}`;
+                    } else if (lowerCasePrompt.match(/(who is)|(what is)|(tell me about)|(define)|(fact)|(describe)|(explain)|(history of)|(when did)|(where is)|(what are)|(list)|(quiz)|(gk)|(general knowledge)|(बताओ)|(क्या है)|(कौन है)|(कब)|(कहां)|(वर्णन करो)/i)) {
+                        promptText = `Answer this general knowledge question with accurate, informative details: ${promptText}`;
                     } else {
-                        prompt = `Provide a helpful and comprehensive answer to: ${prompt}`;
+                        promptText = `Provide a helpful and comprehensive answer to: ${promptText}`;
                     }
                 }
-                parts.push({ text: prompt });
+                parts.push({ text: promptText });
             }
 
             if (imageData) {
@@ -1464,14 +1808,16 @@
         // Function to add query/answer to history
         const addToHistory = (question, answer, imageUsed = false) => {
             const timestamp = new Date().toLocaleString();
-            history.unshift({ question, answer, imageUsed, timestamp });
+            const entry = { question, answer, imageUsed, timestamp };
+            history.unshift(entry);
             if (history.length > 50) { // Keep history manageable, e.g., max 50 entries
                 history.pop();
             }
             saveHistory(); // Save to localStorage immediately
+            return entry; // Return the created entry
         };
 
-        // Function to generate and save PDF for a single history entry
+        // Function to generate and save PDF for a single history or favorite entry
         const generateSinglePdf = async (entry) => {
             stopSpeaking();
             const tempDiv = document.createElement('div');
@@ -1488,7 +1834,7 @@
                 <p>${entry.answer.replace(/\n/g, '<br>')}</p>
                 <small style="display: block; text-align: right; margin-top: 20px; color: #777;">तिथि: ${entry.timestamp}</small>
                 <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.8em; color: #999;">
-                    <p style="margin: 5px 0;">©YADAV_Sir_AI_Solver_All_History</p>
+                    <p style="margin: 5px 0;">©${APP_NAME}</p>
                     <p style="margin: 5px 0;"><a href="${APP_URL}" target="_blank" style="color: #667eea; text-decoration: none;">किसी भी प्रकार के प्रश्न का 1 मिनट उत्तर पाये Ai से -यहाँ क्लिक करें</a></p>
                 </div>
             `;
@@ -1497,22 +1843,32 @@
                 margin: 0.5,
                 filename: `YADAV_Sir_AI_Solver_${entry.timestamp.replace(/[:\/,\s]/g, '_')}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, logging: false, dpi: 192, letterRendering: true }, // Set logging to false for cleaner console
+                html2canvas: { scale: 2, logging: false, dpi: 192, letterRendering: true },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
-            const historyModalContent = historyModal.querySelector('.modal-content');
-            const originalContent = historyModalContent.innerHTML;
-            
-            // Show loading state in history modal
-            historyModalContent.innerHTML = `
-                <div style="text-align: center; padding: 50px;">
-                    <div class="loading" style="width: 40px; height: 40px; border-width: 5px; margin: 0 auto 20px;"></div>
-                    <p style="color: #667eea; font-size: 1.2em;">PDF तैयार हो रही है... कृपया प्रतीक्षा करें।</p>
-                </div>
-            `;
-            downloadHistoryPdfBtn.disabled = true; // Disable main PDF button
-            document.querySelectorAll('.single-pdf-btn').forEach(btn => btn.disabled = true); // Disable individual PDF buttons
+            // Determine which modal is active to show loading and restore
+            const activeModal = historyModal.classList.contains('show') ? historyModal : (favoritesModal.classList.contains('show') ? favoritesModal : null);
+            let originalContent = '';
+            let restoreDisplayFunc = null;
+
+            if (activeModal) {
+                const modalContentElem = activeModal.querySelector('.modal-content');
+                originalContent = modalContentElem.innerHTML;
+                restoreDisplayFunc = activeModal === historyModal ? displayHistory : displayFavorites;
+
+                // Show loading state in active modal
+                modalContentElem.innerHTML = `
+                    <div style="text-align: center; padding: 50px;">
+                        <div class="loading" style="width: 40px; height: 40px; border-width: 5px; margin: 0 auto 20px;"></div>
+                        <p style="color: #667eea; font-size: 1.2em;">PDF तैयार हो रही है... कृपया प्रतीक्षा करें।</p>
+                    </div>
+                `;
+                // Disable all relevant buttons in modals
+                downloadHistoryPdfBtn.disabled = true;
+                document.querySelectorAll('.single-pdf-btn').forEach(btn => btn.disabled = true);
+                document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.disabled = true);
+            }
 
             try {
                 await html2pdf().from(tempDiv).set(opt).save();
@@ -1521,9 +1877,11 @@
                 console.error('एकल PDF जनरेशन विफल हुआ:', error);
                 alert('PDF जनरेशन में त्रुटि हुई। कृपया पुनः प्रयास करें।');
             } finally {
-                // Restore original content and re-enable buttons
-                historyModalContent.innerHTML = originalContent;
-                displayHistory(); // Re-render to re-attach event listeners and re-enable buttons
+                if (activeModal && restoreDisplayFunc) {
+                    // Restore original content and re-enable buttons
+                    activeModal.querySelector('.modal-content').innerHTML = originalContent;
+                    restoreDisplayFunc(); // Re-render to re-attach event listeners and re-enable buttons
+                }
             }
         };
 
@@ -1567,7 +1925,7 @@
                 historySpeakerBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
                 historySpeakerBtn.title = 'उत्तर सुनें';
                 
-                if ('speechSynthesis' in window && hindiVoice) {
+                if ('speechSynthesis' in window && selectedTTSVoice) {
                     historySpeakerBtn.style.display = 'inline-flex'; 
                 } else {
                     historySpeakerBtn.style.display = 'none';
@@ -1594,6 +1952,36 @@
                 });
                 answerContentDiv.appendChild(singlePdfBtn);
 
+                // Add Favorite/Unfavorite button to history items
+                const favBtn = document.createElement('button');
+                favBtn.classList.add('history-speaker-btn'); // Reusing some styles
+                favBtn.style.background = 'rgba(240, 98, 146, 0.2)'; // Pink for favorite
+                favBtn.style.color = '#f06292';
+
+                if (isFavorited(entry)) {
+                    favBtn.innerHTML = '<i class="fas fa-heart"></i>'; // Filled heart
+                    favBtn.title = 'पसंदीदा से हटाएँ';
+                    favBtn.classList.add('favorited');
+                } else {
+                    favBtn.innerHTML = '<i class="far fa-heart"></i>'; // Empty heart
+                    favBtn.title = 'पसंदीदा में जोड़ें';
+                    favBtn.classList.remove('favorited');
+                }
+
+                favBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    if (isFavorited(entry)) {
+                        removeFromFavorites(entry);
+                        alert('पसंदीदा से हटाया गया!');
+                    } else {
+                        addToFavorites(entry);
+                        alert('पसंदीदा में जोड़ा गया!');
+                    }
+                    displayHistory(); // Re-render history to update heart icons
+                    displayFavorites(); // Re-render favorites if it's open
+                });
+                answerContentDiv.appendChild(favBtn);
+
 
                 li.appendChild(answerContentDiv);
 
@@ -1605,6 +1993,99 @@
             });
         };
 
+        // Function to display favorites in the modal (New)
+        const displayFavorites = () => {
+            favoritesList.innerHTML = ''; // Clear existing list items
+            if (favorites.length === 0) {
+                const li = document.createElement('li');
+                li.innerHTML = '<em>अभी कोई पसंदीदा आइटम नहीं है। आप मुख्य आउटपुट से या इतिहास से आइटम पसंदीदा के रूप में चिह्नित कर सकते हैं! ❤️</em>';
+                favoritesList.appendChild(li);
+            } else {
+                favorites.forEach((entry, index) => {
+                    const li = document.createElement('li');
+                    let questionDisplay = entry.question || '';
+                    if (entry.imageUsed) {
+                        questionDisplay = `🖼️ ${questionDisplay.length > 0 ? questionDisplay : 'छवि प्रश्न'}`;
+                    }
+                    if (questionDisplay.length > 100) {
+                        questionDisplay = questionDisplay.substring(0, 100) + '...';
+                    }
+
+                    const questionDiv = document.createElement('div');
+                    questionDiv.innerHTML = `<strong>प्र:</strong> ${questionDisplay}`;
+                    li.appendChild(questionDiv);
+
+                    const answerContentDiv = document.createElement('div');
+                    answerContentDiv.classList.add('answer-content');
+
+                    const answerTextWrapper = document.createElement('span');
+                    answerTextWrapper.classList.add('answer-text-wrapper');
+                    answerTextWrapper.textContent = `उ: ${entry.answer}`;
+                    answerContentDiv.appendChild(answerTextWrapper);
+
+                    // Add a speaker button for favorite items
+                    const favSpeakerBtn = document.createElement('button');
+                    favSpeakerBtn.classList.add('history-speaker-btn'); // Reuse history-speaker-btn styles
+                    favSpeakerBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    favSpeakerBtn.title = 'उत्तर सुनें';
+                    
+                    if ('speechSynthesis' in window && selectedTTSVoice) {
+                        favSpeakerBtn.style.display = 'inline-flex'; 
+                    } else {
+                        favSpeakerBtn.style.display = 'none';
+                    }
+
+                    favSpeakerBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        if (favSpeakerBtn.classList.contains('playing')) {
+                            stopSpeaking();
+                        } else {
+                            speakAnswer(entry.answer, favSpeakerBtn);
+                        }
+                    });
+                    answerContentDiv.appendChild(favSpeakerBtn);
+
+                    // Add a PDF button for favorite items
+                    const favPdfBtn = document.createElement('button');
+                    favPdfBtn.classList.add('single-pdf-btn'); // Reuse single-pdf-btn styles
+                    favPdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+                    favPdfBtn.title = 'यह उत्तर PDF डाउनलोड करें';
+                    favPdfBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        generateSinglePdf(entry); // Reuse the single PDF generation function
+                    });
+                    answerContentDiv.appendChild(favPdfBtn);
+
+                    // Add a "Remove from Favorites" button
+                    const removeFavBtn = document.createElement('button');
+                    removeFavBtn.classList.add('single-pdf-btn'); // Reusing existing button styles
+                    removeFavBtn.style.background = 'rgba(255, 99, 71, 0.2)'; // Custom color for remove
+                    removeFavBtn.style.color = '#ff6347';
+                    removeFavBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    removeFavBtn.title = 'पसंदीदा से हटाएँ';
+                    removeFavBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        if (confirm('क्या आप इसे पसंदीदा से हटाना चाहते हैं?')) {
+                            removeFromFavorites(entry);
+                            alert('पसंदीदा से हटाया गया!');
+                            displayFavorites(); // Re-render the list
+                            displayHistory(); // Re-render history to update heart icons
+                        }
+                    });
+                    answerContentDiv.appendChild(removeFavBtn);
+
+                    li.appendChild(answerContentDiv);
+
+                    const timestampSmall = document.createElement('small');
+                    timestampSmall.innerHTML = entry.timestamp;
+                    li.appendChild(timestampSmall);
+
+                    favoritesList.appendChild(li);
+                });
+            }
+        };
+
+
         // Enhanced loading animation
         const showLoading = () => {
             outputTextContent.innerHTML = '<div class="loading"></div> <span style="margin-left: 10px;">थोड़ी देर रुके " YADAV Sir " आपके question का answer जरूर देगा ,  Wait for a while...</span>';
@@ -1612,15 +2093,22 @@
             if (outputPlaceholder) {
                 outputPlaceholder.style.display = 'none';
             }
+            favoriteOutputBtn.style.display = 'none'; // Hide favorite button during loading
         };
 
         // Function to prepare input for a new query type
         const prepareNewQuery = (type) => {
             questionInput.value = '';
             uploadedImageData = null;
+            imagePreview.src = '';
             imagePreview.style.display = 'none';
             outputTextContent.innerHTML = '<div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>';
             speakerBtn.style.display = 'none'; // Hide speaker button on clear
+            favoriteOutputBtn.style.display = 'none'; // Hide favorite button on clear
+            lastAnsweredQuestion = null;
+            lastAnsweredText = null;
+            lastAnsweredImageUsed = false;
+
             mainMenuModal.classList.remove('show');
             stopSpeaking();
             
@@ -1664,6 +2152,7 @@
             micBtn.querySelector('i').classList.add('fa-beat');
             stopSpeaking();
             speakerBtn.style.display = 'none';
+            favoriteOutputBtn.style.display = 'none'; // Hide favorite button during mic input
 
             recognition.start();
             outputTextContent.innerHTML = '🔊 सुन रहा है... कृपया अपना प्रश्न बोलें।';
@@ -1709,6 +2198,10 @@
                     outputTextContent.innerHTML = `<div id="outputPlaceholder">🖼️ छवि सफलतापूर्वक लोड हुई! अब आप इसके बारे में प्रश्न पूछ सकते हैं।</div>`;
                     stopSpeaking();
                     speakerBtn.style.display = 'none';
+                    favoriteOutputBtn.style.display = 'none'; // Hide favorite button on new image upload
+                    lastAnsweredQuestion = null; // Reset last answer
+                    lastAnsweredText = null;
+                    lastAnsweredImageUsed = false;
                 };
                 reader.readAsDataURL(file);
             } else {
@@ -1719,6 +2212,10 @@
                 outputTextContent.innerHTML = '<div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>';
                 stopSpeaking();
                 speakerBtn.style.display = 'none';
+                favoriteOutputBtn.style.display = 'none'; // Hide favorite button
+                lastAnsweredQuestion = null; // Reset last answer
+                lastAnsweredText = null;
+                lastAnsweredImageUsed = false;
             }
         });
 
@@ -1728,6 +2225,7 @@
             imageInput.value = '';
             stopSpeaking();
             speakerBtn.style.display = 'none';
+            favoriteOutputBtn.style.display = 'none';
         });
 
         // Send/Get Answer Button
@@ -1743,6 +2241,7 @@
             setInteractionState(true);
             stopSpeaking();
             speakerBtn.style.display = 'none';
+            favoriteOutputBtn.style.display = 'none'; // Hide favorite button before new answer
 
             try {
                 const answer = await performAIQuery(textQuestion, uploadedImageData);
@@ -1751,21 +2250,32 @@
                 const isNotError = !answer.startsWith("API त्रुटि:") && !answer.startsWith("नेटवर्क त्रुटि:") && !answer.startsWith("त्रुटि:") && !answer.startsWith("सामग्री सुरक्षा फ़िल्टर द्वारा अवरुद्ध:");
 
                 if (isNotError) {
-                    addToHistory(textQuestion, answer, !!uploadedImageData);
+                    const newEntry = addToHistory(textQuestion, answer, !!uploadedImageData);
+                    lastAnsweredQuestion = newEntry.question;
+                    lastAnsweredText = newEntry.answer;
+                    lastAnsweredImageUsed = newEntry.imageUsed;
 
-                    const lowerCasePrompt = textQuestion.toLowerCase();
-                    const isGKQuestion = lowerCasePrompt.match(/(who is)|(what is)|(tell me about)|(define)|(fact)|(describe)|(explain)|(history of)|(when did)|(where is)|(what are)|(list)|(quiz)|(gk)|(general knowledge)|(बताओ)|(क्या है)|(कौन है)|(कब)|(कहां)/i);
-
-                    if (isGKQuestion && 'speechSynthesis' in window && hindiVoice) {
+                    // Show speaker and favorite buttons only if a valid answer is returned
+                    if ('speechSynthesis' in window && selectedTTSVoice) {
                         speakerBtn.style.display = 'flex';
                         speakerBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
                         speakerBtn.classList.remove('playing');
-                        console.log("GK/क्विज़ उत्तर के लिए मुख्य स्पीकर बटन दिखाया गया।");
-                    } else {
-                        speakerBtn.style.display = 'none';
+                    }
+                    favoriteOutputBtn.style.display = 'flex';
+                    favoriteOutputBtn.innerHTML = '<i class="far fa-heart"></i>'; // Default to empty heart
+                    favoriteOutputBtn.classList.remove('favorited'); // Ensure it's not marked as favorited by default
+
+                    // Check if this answer is already in favorites and update button
+                    if (isFavorited(newEntry)) {
+                        favoriteOutputBtn.innerHTML = '<i class="fas fa-heart"></i>';
+                        favoriteOutputBtn.classList.add('favorited');
                     }
                 } else {
                     speakerBtn.style.display = 'none';
+                    favoriteOutputBtn.style.display = 'none';
+                    lastAnsweredQuestion = null; // Reset last answer on error
+                    lastAnsweredText = null;
+                    lastAnsweredImageUsed = false;
                 }
 
             } finally {
@@ -1785,6 +2295,42 @@
                     console.warn('मुख्य आउटपुट से बोलने के लिए कोई उत्तर सामग्री नहीं है।');
                     alert('कोई उत्तर नहीं है जिसे सुना जा सके।');
                 }
+            }
+        });
+
+        // --- Favorite Output Button Click Handler (New) ---
+        favoriteOutputBtn.addEventListener('click', () => {
+            if (lastAnsweredQuestion && lastAnsweredText) {
+                const entry = {
+                    question: lastAnsweredQuestion,
+                    answer: lastAnsweredText,
+                    imageUsed: lastAnsweredImageUsed,
+                    timestamp: new Date().toLocaleString() // Use current time for favorited time
+                };
+
+                if (isFavorited(entry)) {
+                    // If already favorited, remove it
+                    if (removeFromFavorites(entry)) {
+                        favoriteOutputBtn.innerHTML = '<i class="far fa-heart"></i>'; // Empty heart
+                        favoriteOutputBtn.classList.remove('favorited');
+                        alert('पसंदीदा से हटाया गया!');
+                    } else {
+                        alert('पसंदीदा से हटाते समय त्रुटि हुई।');
+                    }
+                } else {
+                    // If not favorited, add it
+                    if (addToFavorites(entry)) {
+                        favoriteOutputBtn.innerHTML = '<i class="fas fa-heart"></i>'; // Filled heart
+                        favoriteOutputBtn.classList.add('favorited');
+                        alert('पसंदीदा में जोड़ा गया!');
+                    } else {
+                        alert('यह आइटम पहले से ही पसंदीदा में है!');
+                    }
+                }
+                displayFavorites(); // Refresh favorites list if modal is open
+                displayHistory(); // Refresh history list to update heart icons
+            } else {
+                alert('पसंदीदा में जोड़ने के लिए कोई उत्तर नहीं है।');
             }
         });
 
@@ -1860,7 +2406,7 @@
                 try {
                     await navigator.share({
                         title: APP_NAME,
-                        text: 'गणित और सामान्य ज्ञान के सवालों के झटपट जवाब पाएं इस AI ऐप से!',
+                        text: 'गणित और रिजनिंग, सामान्य ज्ञान के सवालों के झटपट जवाब पाएं इस YADAV Sir AI Math & GK Solver ऐप से!',
                         url: APP_URL
                     });
                     console.log('ऐप सफलतापूर्वक साझा किया गया!');
@@ -1881,6 +2427,74 @@
 
         // New Math Problem button
         newMathProblemBtn.addEventListener('click', () => prepareNewQuery('math'));
+
+        // --- New Menu Option Event Listeners ---
+        rateAppBtn.addEventListener('click', () => {
+            alert('इस ऐप को रेटिंग देने के लिए धन्यवाद! कृपया ऐप स्टोर पर जाएँ।');
+            // In a real app, you would redirect to your app's store page here
+            // window.open('https://play.google.com/store/apps/details?id=your.app.package', '_blank');
+            mainMenuModal.classList.remove('show');
+        });
+
+        privacyPolicyBtn.addEventListener('click', () => {
+            window.open('https://yadavsir.vercel.app/privacy-policy.html', '_blank'); // Add your actual privacy policy URL here
+            mainMenuModal.classList.remove('show');
+        });
+
+        // --- Settings Modal Logic ---
+        settingsBtn.addEventListener('click', () => {
+            mainMenuModal.classList.remove('show');
+            stopSpeaking();
+            settingsModal.classList.add('show');
+            applySettings(); // Ensure settings are reflected when opening modal
+        });
+
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('show');
+        });
+
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('show');
+            }
+        });
+
+        // Language selection handler
+        languageSelect.addEventListener('change', (e) => {
+            appSettings.language = e.target.value;
+            saveSettings();
+            loadVoices(); // Reload voices to match new language preference
+            alert(`भाषा "${e.target.options[e.target.selectedIndex].text}" में सेट कर दी गई है।`);
+        });
+
+        // Text size selection handler
+        textSizeOptions.addEventListener('change', (e) => {
+            if (e.target.name === 'textSize') {
+                appSettings.textSize = e.target.value;
+                saveSettings();
+                applySettings(); // Apply new text size immediately
+                alert(`टेक्स्ट आकार ${e.target.value} पर सेट कर दिया गया है।`);
+            }
+        });
+
+        // Remove Ads button handler
+        removeAdsBtn.addEventListener('click', () => {
+            if (appSettings.isAdFree) {
+                alert('आप पहले से ही विज्ञापन-मुक्त अनुभव का आनंद ले रहे हैं!');
+                return;
+            }
+            const confirmPurchase = confirm('यह सुविधा आपको ₹49 के एक बार के भुगतान पर विज्ञापन-मुक्त अनुभव प्रदान करती है। क्या आप जारी रखना चाहते हैं? (यह एक डेमो है, कोई वास्तविक भुगतान नहीं होगा)');
+            if (confirmPurchase) {
+                // Simulate successful payment
+                appSettings.isAdFree = true;
+                saveSettings();
+                applySettings(); // Hide ads and update button
+                alert('धन्यवाद! अब आप विज्ञापन-मुक्त अनुभव का आनंद लेंगे।');
+                settingsModal.classList.remove('show'); // Close settings after purchase
+            } else {
+                alert('विज्ञापन-मुक्त अनुभव रद्द कर दिया गया।');
+            }
+        });
 
         // --- History Modal Logic ---
         closeHistoryBtn.addEventListener('click', () => {
@@ -1925,10 +2539,9 @@
                 `;
             });
 
-            // आपका फुटर यहाँ जोड़ा जा रहा है
             historyContentHtml += `
              <div style="margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.8em; color: #999;">
-                <p style="margin: 5px 0;">©YADAV_Sir_AI_Solver_All_History</p>
+                <p style="margin: 5px 0;">©${APP_NAME}</p>
                 <p style="margin: 5px 0;"><a href="${APP_URL}" target="_blank" style="color: #667eea; text-decoration: none;">किसी भी प्रकार के प्रश्न का 1 मिनट उत्तर पाये Ai से -यहाँ क्लिक करें</a></p>
             </div>
              `;
@@ -1968,9 +2581,31 @@
             }
         });
 
+        // --- Favorites Modal Logic (New) ---
+        openFavoritesBtn.addEventListener('click', () => {
+            mainMenuModal.classList.remove('show');
+            stopSpeaking();
+            displayFavorites(); // Display current favorites
+            favoritesModal.classList.add('show');
+        });
+
+        closeFavoritesBtn.addEventListener('click', () => {
+            favoritesModal.classList.remove('show');
+            stopSpeaking();
+        });
+
+        favoritesModal.addEventListener('click', (e) => {
+            if (e.target === favoritesModal) {
+                favoritesModal.classList.remove('show');
+                stopSpeaking();
+            }
+        });
+
 
         // Initial setup: load history and display it
+        loadSettings(); // Load settings first
         loadHistory();
+        loadFavorites(); // Load favorites on startup
         displayHistory(); // Call once on load to show initial history
     });
 </script>
