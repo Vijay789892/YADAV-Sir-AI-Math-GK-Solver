@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -824,9 +825,72 @@
             min-height: 100px; /* Slightly less height on mobile */
         }
     }
+
+
+ .social-buttons {
+            position: fixed;
+            top: 20%;
+            right: 4px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 1000;
+        }
+        
+        .social-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 5%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .social-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        
+
+        
+        .social-icon {
+            color: white;
+            font-size: 22px;
+        }
+
+
 </style>
 </head>
 <body>
+
+  <div class="social-buttons">
+        
+        <!-- WhatsApp -->
+        <a href="https://whatsapp.com/channel/0029VbAUHnn7NoZz3vfqy43Z" class="social-btn whatsapp-btn" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+
+
+        <!-- Website -->
+        <a href="https://yadavsirai.blogspot.com/?m=1" class="social-btn website-btn" target="_blank">
+            <i class="fas fa-globe"></i>
+        </a>
+
+        <!-- Game -->
+        <a href="https://yadav-sir-learn-english-app.vercel.app/#" class="social-btn game-btn" target="_blank">
+            <i class="fas fa-gamepad"></i>
+        </a>
+ </div>
+
+
+
+
+
 
     <div class="container">
         <header>
@@ -1430,26 +1494,6 @@
     };
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
