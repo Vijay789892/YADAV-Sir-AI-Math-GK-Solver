@@ -868,6 +868,124 @@
         }
 
 
+// ads लोगो //
+
+margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #e1bee7);
+      text-align: center;
+      touch-action: pan-y; /* Allow vertical touch scrolling */
+    }
+
+    .slider {
+      width: 100%;
+      max-width: 370px; /* Modified width to 320px */
+      height: 40px; /* Added height constraint of 50px */
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 2px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.6s ease-in-out;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      position: relative;
+      height: 100%;
+    }
+
+    .slide-link {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 50px; /* Fixed height to 50px */
+      object-fit: cover; /* Maintain aspect ratio while filling the container */
+      display: block;
+    }
+
+    .app-card {
+      margin: 30px auto;
+      max-width: 350px;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      border-radius: 10px;
+      padding: 4px 20px;
+      box-shadow: 0 10px 25px rgba(0, 114, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 2px solid #00c6ff;
+      color: white;
+    }
+
+    .app-logo {
+      width: 55px;
+      height: 55px;
+      border-radius: 12px;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .app-name {
+      font-size: 19px;
+      font-weight: 600;
+      flex: 1;
+      text-align: left;
+      padding-left: 10px;
+      color: #ffffff;
+    }
+
+    .install-btn {
+      background: #003cb3; /* गाढ़ा नीला */
+      color: white;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.3s ease;
+    }
+
+    .install-btn:hover {
+      background: #002080; /* और गहरा नीला hover पर */
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ccc;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .dot.active {
+      background: #0072ff;
+    }
+
+
+
+
+
 </style>
 </head>
 <body>
@@ -977,6 +1095,10 @@
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/68baa3fdb766c51c4e785d08e5b8a541/invoke.js"></script>
 
+
+
+
+
         <!-- ########################################## -->
         <!-- ##  नया क्रॉप करने वाला Modal यहाँ है    ## -->
         <!-- ########################################## -->
@@ -1026,20 +1148,27 @@
                 </button>
                 <h2>🚀 मेनू</h2>
 
+ <!-- Updated slider content -->
+<div class="slider">
+  <div class="slides" id="slides">
+    <div class="slide">
+      <a href="https://fun-spark.vercel.app/" class="slide-link" target="_blank">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiDowMd2QC338VIRcdDBRkKDtx_zrS8ckXhuWAx8DDBaiE4PPtzlvomlgjA4JeQpZdsQmoCa5zvnHCJmnPdTJW6WQav64g-eUz4CFMQUqSkiIJXyet738WNADlbaFXubsoKxYRez7on5bef465s98n2pk9pzisZUSpYx4zaANqO_tzvx96Wif45ge6RP1cS/s625/%F0%9F%98%9C_20250623_205212_0000.png" alt="Ad 1">
+      </a>
+    </div>
+   <div class="slide">
+      <a href="https://yadav-sir-learn-english-app.vercel.app/#" class="slide-link" target="_blank">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhDOvgI2i2-VATFWQ91furff9IrITugExIzM-U8dPARHtME_h7efnc77XBezmiRQu-g-4K1fxWMDVfi4VaHfO-2TiLaXeFpweSbGzeYCI_FP9zwvk0PkFYY6ZwSc-bfDYUEhhNrMBWd1gXViMjIQ1AhqL51S52gmbnhFHjZ8eScoD9A5XAMdKonrjFUdRms/s625/%F0%9F%98%9C_20250623_210437_0000.png" alt="Ad 1">
+      </a>
+    </div>
+  </div>
+  <div class="dots" id="dots"></div>
+</div>
 
 
+ <li class="menu-divider"></li>
 
 
-  <script type="text/javascript">
-    atOptions = {
-        'key' : 'dfb9f45a0bfc2772a4f0f47ce1391707',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-    };
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/dfb9f45a0bfc2772a4f0f47ce1391707/invoke.js"></script>
 
                 <ul id="mainMenuOptions">
 
@@ -2979,6 +3108,102 @@
         loadFavorites(); // Load favorites on startup
         displayHistory(); // Call once on load to show initial history
     });
+
+let index = 0;
+    const slides = document.getElementById('slides');
+    const dotsContainer = document.getElementById('dots');
+    const totalSlides = slides.children.length;
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let autoSlideInterval;
+
+    // Create dots for navigation
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (i === 0) dot.classList.add('active');
+      dot.addEventListener('click', () => goToSlide(i));
+      dotsContainer.appendChild(dot);
+    }
+
+    // Initialize auto slide
+    startAutoSlide();
+
+    function goToSlide(slideIndex) {
+      index = slideIndex;
+      updateSlider();
+    }
+
+    function updateSlider() {
+      slides.style.transform = `translateX(-${index * 100}%)`;
+      
+      // Update active dot
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+    }
+
+    function nextSlide() {
+      index = (index + 1) % totalSlides;
+      updateSlider();
+    }
+
+    function prevSlide() {
+      index = (index - 1 + totalSlides) % totalSlides;
+      updateSlider();
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(nextSlide, 2000);
+    }
+
+    function stopAutoSlide() {
+      clearInterval(autoSlideInterval);
+    }
+
+    // Touch event handlers for swipe
+    slides.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      stopAutoSlide();
+    }, {passive: true});
+
+    slides.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+      startAutoSlide();
+    }, {passive: true});
+
+    function handleSwipe() {
+      const threshold = 50; // Minimum swipe distance
+      if (touchEndX < touchStartX - threshold) {
+        // Swipe left - next slide
+        nextSlide();
+      } else if (touchEndX > touchStartX + threshold) {
+        // Swipe right - previous slide
+        prevSlide();
+      }
+    }
+
+    // Mouse event handlers for desktop
+    slides.addEventListener('mousedown', (e) => {
+      touchStartX = e.clientX;
+      stopAutoSlide();
+    });
+
+    slides.addEventListener('mouseup', (e) => {
+      touchEndX = e.clientX;
+      handleSwipe();
+      startAutoSlide();
+    });
+
+    slides.addEventListener('mouseleave', () => {
+      startAutoSlide();
+    });
+
+    function installApp() {
+      window.location.href = "https://yourappdownloadlink.com"; // यहाँ अपने App का लिंक लगाएं
+    }
 </script>
 </body>
 </html>
