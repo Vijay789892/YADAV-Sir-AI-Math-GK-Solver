@@ -1902,28 +1902,53 @@
         };
         
         // --- Speech Synthesis Functions ---
+                // --- Speech Synthesis Functions ---
         const loadVoices = () => {
             const voices = window.speechSynthesis.getVoices();
-            const preferredLang = appSettings.language === 'auto' ? navigator.language || 'en-US' : appSettings.language;
-            
-            // Try to find a voice matching the selected language
-            selectedTTSVoice = voices.find(voice => voice.lang.startsWith(preferredLang) || voice.name.includes(preferredLang.split('-')[0]));
-            
-            if (!selectedTTSVoice && preferredLang !== 'hi') { // Fallback to Hindi if not found and user didn't explicitly select Hindi
-                selectedTTSVoice = voices.find(voice => voice.lang.startsWith('hi') || voice.name.includes('Hindi'));
-            }
-            if (!selectedTTSVoice) { // Fallback to English if Hindi not found
-                selectedTTSVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0];
+            if (voices.length === 0) {
+                 // Voices haven't loaded yet. The browser will call this function again when they do.
+                return;
             }
 
+            const selectedLangSetting = appSettings.language;
+            let potentialVoice = null;
+
+            // Priority 1: If user explicitly selects a language in settings, try to honor it.
+            if (selectedLangSetting && selectedLangSetting !== 'auto') {
+                 potentialVoice = 
+                    voices.find(voice => voice.lang.startsWith(selectedLangSetting)) ||
+                    voices.find(voice => voice.lang.split('-')[0] === selectedLangSetting);
+            }
+            
+            // Priority 2: If no specific voice found OR setting is 'auto', aggressively find a Hindi voice.
+            // This ensures Hindi is the default unless another language is explicitly chosen and found.
+            if (!potentialVoice) {
+                potentialVoice = 
+                    voices.find(voice => voice.lang === 'hi-IN') || // 1. Perfect match for Indian Hindi
+                    voices.find(voice => voice.lang.startsWith('hi')) || // 2. Any Hindi voice
+                    voices.find(voice => voice.name.toLowerCase().includes('hindi')) || // 3. Name contains "hindi"
+                    voices.find(voice => voice.name.includes('हिन्दी')); // 4. Name contains "हिन्दी"
+            }
+
+            // Priority 3: Fallback to English or browser default if NO voice has been found yet
+            if (!potentialVoice) {
+                potentialVoice = 
+                    voices.find(voice => voice.lang.startsWith('en')) || // English fallback
+                    voices.find(voice => voice.lang.startsWith(navigator.language)) || // Browser language
+                    voices[0]; // Absolute last resort: the first voice available
+            }
+
+            selectedTTSVoice = potentialVoice;
+
+            // Update UI based on whether a voice was found
             if (!selectedTTSVoice) {
                 console.error("कोई आवाज नहीं मिली। टेक्स्ट-टू-स्पीच काम नहीं कर सकता है।");
                 speakerBtn.style.display = 'none';
-                favoriteOutputBtn.style.display = 'none'; // Also hide favorite button if no TTS (implies no answer yet)
+                favoriteOutputBtn.style.display = 'none';
                 document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
             } else {
                 console.log(`TTS voice selected: ${selectedTTSVoice.name} (${selectedTTSVoice.lang})`);
-                // speakerBtn.style.display = 'flex'; // Show main speaker button if TTS is available (handled in sendBtn)
+                // Ensure speaker buttons in history are visible if TTS is supported
                 document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'inline-flex'); 
             }
         };
