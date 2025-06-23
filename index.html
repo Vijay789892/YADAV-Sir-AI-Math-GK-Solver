@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +7,11 @@
     <title>AI Math & GK Solver</title>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Cropper.js के लिए CSS और JS फाइलें -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" defer></script>
+    
     <!-- html2pdf.js CDN for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
@@ -976,12 +980,25 @@
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/68baa3fdb766c51c4e785d08e5b8a541/invoke.js"></script>
 
-
-
-
-
-
- <!-- End Ad Banner container -->
+        <!-- ########################################## -->
+        <!-- ##  नया क्रॉप करने वाला Modal यहाँ है    ## -->
+        <!-- ########################################## -->
+        <div class="history-modal" id="cropperModal"> 
+            <div class="modal-content" style="max-width: 90vw; max-height: 90vh;">
+                <h2>🖼️ इमेज को क्रॉप करें</h2>
+                <div id="cropperContainer" style="height: 60vh; margin-bottom: 20px;">
+                    <img id="imageToCrop" src="" alt="Image to crop" style="display: block; max-width: 100%;">
+                </div>
+                <div class="action-buttons" style="justify-content: center; gap: 20px;">
+                     <button id="cropImageBtn" class="send-btn" style="position: static; transform: none; background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%); width: 120px; border-radius: 10px;" title="क्रॉप की पुष्टि करें">
+                        <i class="fas fa-check"></i> पुष्टि करें
+                    </button>
+                    <button id="cancelCropBtn" class="send-btn" style="position: static; transform: none; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); width: 120px; border-radius: 10px;" title="रद्द करें">
+                        <i class="fas fa-times"></i> रद्द करें
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- Camera Modal -->
         <div class="camera-modal" id="cameraModal">
@@ -1588,6 +1605,16 @@
         const openFavoritesBtn = document.getElementById('openFavoritesBtn'); // The button in the main menu
         const favoriteOutputBtn = document.getElementById('favoriteOutputBtn'); // New: Button in output area
 
+        // #############################################
+        // ##  इमेज क्रॉप करने के लिए नए एलिमेंट्स    ##
+        // #############################################
+        const cropperModal = document.getElementById('cropperModal');
+        const imageToCrop = document.getElementById('imageToCrop');
+        const cropImageBtn = document.getElementById('cropImageBtn');
+        const cancelCropBtn = document.getElementById('cancelCropBtn');
+        let cropper = null; // Cropper.js इंस्टैंस को रखने के लिए
+
+
         // API Configuration
         const GEMINI_API_KEY = 'AIzaSyDHy9J04dI8LdK1ijNJMrRXubJ5ucx9rdk'; // Keep your API key private in a real app
 
@@ -1721,7 +1748,8 @@
                     favorites = JSON.parse(storedFavorites);
                     console.log('पसंदीदा localStorage से लोड हुआ।');
                 }
-            } catch (e) {
+            } catch (e)
+                {
                 console.error('पसंदीदा को localStorage से लोड करने में त्रुटि हुई:', e);
                 favorites = []; // Reset if loading fails
             }
@@ -1773,6 +1801,34 @@
             imageInput.disabled = disabled;
             shareResultBtn.disabled = disabled;
             document.querySelector('.file-input-wrapper').classList.toggle('disabled', disabled);
+        };
+        
+        // #############################################
+        // ##  इमेज क्रॉप करने के लिए नई फंक्शन      ##
+        // #############################################
+        const startCropper = (imageDataUrl) => {
+            // अगर कैमरा चल रहा है तो उसे बंद करें
+            if (currentStream) {
+                stopCamera();
+            }
+
+            imageToCrop.src = imageDataUrl;
+            cropperModal.classList.add('show');
+            
+            // अगर पहले से कोई cropper है तो उसे हटा दें
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            // Cropper.js को शुरू करें
+            cropper = new Cropper(imageToCrop, {
+                aspectRatio: NaN,      // फ्री-फॉर्म क्रॉपिंग
+                viewMode: 1,           // क्रॉप एरिया को इमेज के अंदर रखें
+                dragMode: 'move',      // इमेज को मूव करने की अनुमति दें
+                background: false,     // पारदर्शी बैकग्राउंड
+                responsive: true,
+                autoCropArea: 0.8,
+            });
         };
 
         // Camera functionality
@@ -1847,32 +1903,7 @@
                 }
             }
         };
-
-        const capturePhoto = () => {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            
-            canvas.width = cameraVideo.videoWidth;
-            canvas.height = cameraVideo.videoHeight;
-            
-            context.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
-            
-            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
-            
-            imagePreview.src = dataURL;
-            imagePreview.style.display = 'block';
-            
-            uploadedImageData = {
-                mimeType: 'image/jpeg',
-                data: dataURL.split(',')[1]
-            };
-            
-            questionInput.placeholder = "📷🖼️ फोटो खींची गई! इसके बारे में एक प्रश्न जोड़ें (वैकल्पिक)";
-            outputTextContent.innerHTML = `📷 फोटो सफलतापूर्वक कैप्चर की गई! अब आप इसके बारे में प्रश्न पूछ सकते हैं।`;
-            
-            stopCamera();
-        };
-
+        
         // --- Speech Synthesis Functions ---
         const loadVoices = () => {
             const voices = window.speechSynthesis.getVoices();
@@ -2403,6 +2434,25 @@
 
         // --- Event Listeners ---
 
+        // ###############################################################
+        // ##  यह capturePhoto फंक्शन बदल दी गयी है                  ##
+        // ###############################################################
+        const capturePhoto = () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.width = cameraVideo.videoWidth;
+            canvas.height = cameraVideo.videoHeight;
+            
+            context.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+            
+            const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+            
+            stopCamera(); // कैमरा बंद करें
+            startCropper(dataURL); // और क्रॉप modal शुरू करें
+        };
+
+
         // Camera button
         cameraBtn.addEventListener('click', startCamera);
 
@@ -2458,41 +2508,64 @@
             };
         }
 
-        // Image Input (File Upload)
+        // ###############################################################
+        // ##  यह imageInput का इवेंट लिस्नर भी बदल दिया गया है       ##
+        // ###############################################################
         imageInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    imagePreview.src = reader.result;
-                    imagePreview.style.display = 'block';
-                    uploadedImageData = {
-                        mimeType: file.type,
-                        data: reader.result.split(',')[1]
-                    };
-                    questionInput.placeholder = `🖼️ छवि अपलोड की गई! इसके बारे में एक प्रश्न जोड़ें (वैकल्पिक)`;
-                    outputTextContent.innerHTML = `<div id="outputPlaceholder">🖼️ छवि सफलतापूर्वक लोड हुई! अब आप इसके बारे में प्रश्न पूछ सकते हैं।</div>`;
-                    stopSpeaking();
-                    speakerBtn.style.display = 'none';
-                    favoriteOutputBtn.style.display = 'none'; // Hide favorite button on new image upload
-                    lastAnsweredQuestion = null; // Reset last answer
-                    lastAnsweredText = null;
-                    lastAnsweredImageUsed = false;
+                    startCropper(reader.result); // फाइल लोड होने पर सीधे क्रॉप modal शुरू करें
                 };
                 reader.readAsDataURL(file);
-            } else {
-                imagePreview.src = '';
-                imagePreview.style.display = 'none';
-                uploadedImageData = null;
-                questionInput.placeholder = `गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ कुछ भी पूछें!`;
-                outputTextContent.innerHTML = '<div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>';
-                stopSpeaking();
-                speakerBtn.style.display = 'none';
-                favoriteOutputBtn.style.display = 'none'; // Hide favorite button
-                lastAnsweredQuestion = null; // Reset last answer
-                lastAnsweredText = null;
-                lastAnsweredImageUsed = false;
             }
+        });
+
+
+        // ###############################################################
+        // ##  क्रॉप Modal के बटनों के लिए नए इवेंट लिस्नर             ##
+        // ###############################################################
+        cropImageBtn.addEventListener('click', () => {
+            if (!cropper) return;
+
+            // क्रॉप की हुई इमेज का canvas प्राप्त करें
+            const croppedCanvas = cropper.getCroppedCanvas({
+                width: 1024, // बेहतर प्रदर्शन के लिए आकार बदलें
+                fillColor: '#fff',
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+            
+            const croppedDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
+
+            // मुख्य स्क्रीन पर क्रॉप की हुई इमेज दिखाएं
+            imagePreview.src = croppedDataUrl;
+            imagePreview.style.display = 'block';
+
+            // क्रॉप की हुई इमेज का डेटा AI को भेजने के लिए सहेजें
+            uploadedImageData = {
+                mimeType: 'image/jpeg',
+                data: croppedDataUrl.split(',')[1]
+            };
+
+            questionInput.placeholder = `🖼️ इमेज क्रॉप हो गयी! अब सवाल पूछें।`;
+            outputTextContent.innerHTML = `<div id="outputPlaceholder">🖼️ इमेज तैयार है। अब अपना सवाल भेजें।</div>`;
+
+            // क्रॉप modal को साफ और बंद करें
+            cropper.destroy();
+            cropper = null;
+            cropperModal.classList.remove('show');
+            imageInput.value = ''; // इनपुट को रीसेट करें ताकि वही फाइल दोबारा चुनी जा सके
+        });
+
+        cancelCropBtn.addEventListener('click', () => {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            cropperModal.classList.remove('show');
+            imageInput.value = ''; // इनपुट को रीसेट करें
         });
 
         // Clear Input Button
@@ -2887,3 +2960,5 @@
 </script>
 </body>
 </html>
+
+
