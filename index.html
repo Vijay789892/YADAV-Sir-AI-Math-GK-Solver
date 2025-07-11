@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -209,16 +208,15 @@
     }
 
     /* Main Speaker Button Styles */
-    #speakerBtn, #favoriteOutputBtn { /* Added #favoriteOutputBtn */
+    #speakerBtn, #favoriteOutputBtn, #downloadOutputPdfBtn { /* [संशोधित] #downloadOutputPdfBtn जोड़ा गया */
         position: absolute;
         bottom: 15px;
-        right: 15px;
         background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
         border: none;
         border-radius: 50%;
         width: 45px;
         height: 45px;
-        display: none; /* Controlled by JS */
+        display: none; /* JS द्वारा नियंत्रित */
         justify-content: center;
         align-items: center;
         font-size: 1.2em;
@@ -228,22 +226,44 @@
         transition: all 0.3s ease;
         z-index: 5;
     }
-
-    #speakerBtn:hover, #favoriteOutputBtn:hover {
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+    
+    #speakerBtn {
+        right: 15px; /* [संशोधित] पोजिशन एडजस्ट की गई */
     }
 
+    #speakerBtn:hover, #favoriteOutputBtn:hover, #downloadOutputPdfBtn:hover { /* [संशोधित] */
+        transform: translateY(-2px) scale(1.05);
+    }
+    
+    #speakerBtn:hover {
+        box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+    }
+    
     #speakerBtn.playing {
         background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
     }
 
     #favoriteOutputBtn {
-        right: 70px; /* Position next to speaker button */
+        right: 70px; /* [संशोधित] पोजिशन एडजस्ट की गई */
         background: linear-gradient(135deg, #f06292 0%, #e91e63 100%); /* Pink/Red for favorite */
     }
+
+    #favoriteOutputBtn:hover {
+        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+    }
+
     #favoriteOutputBtn.favorited {
         background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%); /* Gold/Orange when favorited */
+    }
+
+    /* [नया] नए PDF डाउनलोड बटन के लिए स्टाइल */
+    #downloadOutputPdfBtn {
+        right: 125px; /* सबसे बाईं ओर */
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); /* PDF के लिए ऑरेंज */
+    }
+
+    #downloadOutputPdfBtn:hover {
+        box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
     }
 
     /* History & Favorites List Speaker Button Styles */
@@ -771,14 +791,22 @@
 
         #speakerBtn {
             bottom: 10px;
-            right: 10px;
+            right: 10px; /* [संशोधित] */
             width: 40px;
             height: 40px;
             font-size: 1.1em;
         }
-        #favoriteOutputBtn { /* Position for mobile */
+        #favoriteOutputBtn {
             bottom: 10px;
-            right: 60px; /* Adjust based on speakerBtn size */
+            right: 60px; /* [संशोधित] */
+            width: 40px;
+            height: 40px;
+            font-size: 1.1em;
+        }
+        /* [नया] मोबाइल के लिए PDF बटन */
+        #downloadOutputPdfBtn {
+            bottom: 10px;
+            right: 110px;
             width: 40px;
             height: 40px;
             font-size: 1.1em;
@@ -984,6 +1012,7 @@ margin: 0;
     }
 
 
+
   // Days and months in Hindi
         
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1054,11 +1083,9 @@ margin: 0;
             51%, 10% { opacity: 0.7; }
         }
 
-
 </style>
 </head>
 <body>
-
 
   <div class="social-buttons">
 
@@ -1104,15 +1131,12 @@ margin: 0;
 आपका पर्सनल AI ट्यूटर, 24/7 आपकी मदद के लिए तैयार।
 ! </marquee>
 
-
         <header>
-  
 
             <button class="menu-btn" id="menuBtn">
                 <i class="fas fa-bars"></i>
             </button>
-            <div class="app-title">YADAV Sir AI </div> Math & GK Solver
-
+            <div class="app-title">YADAV Sir AI  </div> Math & GK Solver
         </header>
         <main>
             <textarea id="questionInput" placeholder="गणित की समस्या, सामान्य ज्ञान का प्रश्न, या कुछ भी पूछें! और उत्तर पाने के लिए ° बटन दबाये!     "></textarea>
@@ -1146,6 +1170,7 @@ margin: 0;
                <div id="outputArea">
                 <div id="outputTextContent">
                     <div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे।   भाषा चुने चुनने के लिए ☰ बटन दबाये ! 
+
 </div>
 
   <div class="widget-container">
@@ -1158,15 +1183,20 @@ margin: 0;
         <div class="date-display" id="date">
             शुक्र, 11 जुलाई
         </div>
-    </div>
+
+✨</div>
                 </div>
 
-             <button id="speakerBtn" title="उत्तर सुनें">
+                <button id="speakerBtn" title="उत्तर सुनें">
                     <i class="fas fa-volume-up"></i>
                 </button>
                 <!-- New Favorite Button in Output Area -->
                 <button id="favoriteOutputBtn" title="उत्तर को पसंदीदा में जोड़ें">
                     <i class="fas fa-heart"></i>
+                </button>
+                <!-- [नया] सिंगल उत्तर को PDF डाउनलोड करने के लिए बटन -->
+                <button id="downloadOutputPdfBtn" title="इस उत्तर को PDF के रूप में डाउनलोड करें">
+                    <i class="fas fa-file-pdf"></i>
                 </button>
             </div>
             
@@ -1260,6 +1290,8 @@ margin: 0;
 
  
 
+
+
                 <ul id="mainMenuOptions">
 
                      <li><button id="settingsBtn"><i class="fas fa-gear"></i> सेटिंग्स ( भाषा चुने ) </button></li>
@@ -1327,6 +1359,8 @@ margin: 0;
                 </li>
 
                   <li><button id="shareAppBtn"><i class="fas fa-share-alt"></i> ऐप साझा करें</button></li>
+
+
 
 
 <script type="text/javascript">
@@ -1834,6 +1868,7 @@ margin: 0;
         const closeFavoritesBtn = document.getElementById('closeFavoritesBtn');
         const openFavoritesBtn = document.getElementById('openFavoritesBtn'); // The button in the main menu
         const favoriteOutputBtn = document.getElementById('favoriteOutputBtn'); // New: Button in output area
+        const downloadOutputPdfBtn = document.getElementById('downloadOutputPdfBtn'); // [नया] PDF बटन का रेफरेंस
 
         // #############################################
         // ##  इमेज क्रॉप करने के लिए नए एलिमेंट्स    ##
@@ -1846,7 +1881,7 @@ margin: 0;
 
 
         // API Configuration
-        const GEMINI_API_KEY = 'AIzaSyB54CQ5DM2cFxX7BfBm-GPHJqj_09bVQxM'; // Keep your API key private in a real app
+        const GEMINI_API_KEY = 'AIzaSyDHy9J04dI8LdK1ijNJMrRXubJ5ucx9rdk'; // Keep your API key private in a real app
 
         // Variables for image data, history, and camera
         let uploadedImageData = null;
@@ -2178,6 +2213,7 @@ margin: 0;
                 console.error("कोई आवाज नहीं मिली। टेक्स्ट-टू-स्पीच काम नहीं कर सकता है।");
                 speakerBtn.style.display = 'none';
                 favoriteOutputBtn.style.display = 'none';
+                downloadOutputPdfBtn.style.display = 'none';
                 document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
             } else {
                 console.log(`TTS voice selected: ${selectedTTSVoice.name} (${selectedTTSVoice.lang})`);
@@ -2193,6 +2229,7 @@ margin: 0;
             console.warn("यह ब्राउज़र स्पीच सिंथेसिस API का समर्थन नहीं करता है।");
             speakerBtn.style.display = 'none';
             favoriteOutputBtn.style.display = 'none';
+            downloadOutputPdfBtn.style.display = 'none';
             document.querySelectorAll('.history-speaker-btn').forEach(btn => btn.style.display = 'none');
         }
 
@@ -2656,6 +2693,7 @@ margin: 0;
                 outputPlaceholder.style.display = 'none';
             }
             favoriteOutputBtn.style.display = 'none'; // Hide favorite button during loading
+            downloadOutputPdfBtn.style.display = 'none'; // [नया] लोडिंग के दौरान PDF बटन छिपाएं
         };
 
         // Function to prepare input for a new query type
@@ -2667,6 +2705,7 @@ margin: 0;
             outputTextContent.innerHTML = '<div id="outputPlaceholder">आपके उत्तर यहाँ दिखाई देंगे। ✨</div>';
             speakerBtn.style.display = 'none'; // Hide speaker button on clear
             favoriteOutputBtn.style.display = 'none'; // Hide favorite button on clear
+            downloadOutputPdfBtn.style.display = 'none'; // [नया] साफ़ करने पर PDF बटन छिपाएं
             lastAnsweredQuestion = null;
             lastAnsweredText = null;
             lastAnsweredImageUsed = false;
@@ -2734,6 +2773,8 @@ margin: 0;
             stopSpeaking();
             speakerBtn.style.display = 'none';
             favoriteOutputBtn.style.display = 'none'; // Hide favorite button during mic input
+            downloadOutputPdfBtn.style.display = 'none'; // [नया] माइक इनपुट के दौरान PDF बटन छिपाएं
+
 
             recognition.start();
             outputTextContent.innerHTML = '🔊 सुन रहा है... कृपया अपना प्रश्न बोलें।';
@@ -2830,6 +2871,7 @@ margin: 0;
             stopSpeaking();
             speakerBtn.style.display = 'none';
             favoriteOutputBtn.style.display = 'none';
+            downloadOutputPdfBtn.style.display = 'none'; // [नया]
         });
 
         // Send/Get Answer Button
@@ -2846,6 +2888,7 @@ margin: 0;
             stopSpeaking();
             speakerBtn.style.display = 'none';
             favoriteOutputBtn.style.display = 'none'; // Hide favorite button before new answer
+            downloadOutputPdfBtn.style.display = 'none'; // [नया] नए उत्तर से पहले PDF बटन छिपाएं
 
             try {
                 const answer = await performAIQuery(textQuestion, uploadedImageData);
@@ -2868,6 +2911,8 @@ margin: 0;
                     favoriteOutputBtn.style.display = 'flex';
                     favoriteOutputBtn.innerHTML = '<i class="far fa-heart"></i>'; // Default to empty heart
                     favoriteOutputBtn.classList.remove('favorited'); // Ensure it's not marked as favorited by default
+                    
+                    downloadOutputPdfBtn.style.display = 'flex'; // [नया] उत्तर आने पर PDF बटन दिखाएं
 
                     // Check if this answer is already in favorites and update button
                     if (isFavorited(newEntry)) {
@@ -2877,6 +2922,7 @@ margin: 0;
                 } else {
                     speakerBtn.style.display = 'none';
                     favoriteOutputBtn.style.display = 'none';
+                    downloadOutputPdfBtn.style.display = 'none'; // [नया] त्रुटि होने पर PDF बटन छिपाएं
                     lastAnsweredQuestion = null; // Reset last answer on error
                     lastAnsweredText = null;
                     lastAnsweredImageUsed = false;
@@ -3205,6 +3251,27 @@ margin: 0;
             }
         });
 
+        // [नया] मुख्य आउटपुट से सीधे PDF डाउनलोड करने के लिए इवेंट लिसनर
+        downloadOutputPdfBtn.addEventListener('click', () => {
+            stopSpeaking(); // किसी भी चल रही स्पीच को रोकें
+
+            // जांचें कि क्या डाउनलोड करने के लिए कोई उत्तर है
+            if (lastAnsweredText) {
+                // generateSinglePdf फंक्शन को पास करने के लिए एक 'entry' ऑब्जेक्ट बनाएं
+                const currentEntry = {
+                    question: lastAnsweredQuestion || (lastAnsweredImageUsed ? 'छवि-आधारित प्रश्न' : 'कोई प्रश्न नहीं'),
+                    answer: lastAnsweredText,
+                    imageUsed: lastAnsweredImageUsed,
+                    timestamp: new Date().toLocaleString() // पीडीएफ के लिए वर्तमान समय का उपयोग करें
+                };
+
+                // मौजूदा PDF जनरेशन फंक्शन को कॉल करें
+                generateSinglePdf(currentEntry);
+            } else {
+                alert('डाउनलोड करने के लिए कोई उत्तर उपलब्ध नहीं है।');
+            }
+        });
+
 
         // Initial setup: load history and display it
         loadSettings(); // Load settings first
@@ -3308,8 +3375,6 @@ let index = 0;
     function installApp() {
       window.location.href = "https://median.co/share/nokjya#apk"; // यहाँ अपने App का लिंक लगाएं
     }
-
-
    // Days and months in Hindi
         const hindiDays = ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'];
         const hindiMonths = [
